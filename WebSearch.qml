@@ -238,13 +238,13 @@ Item {
             }
         }
 
-        const defaultEngineObj = allEngines.find(e => e.id === defaultEngine)
-        if (defaultEngineObj) {
+        const primaryEngineObj = allEngines.find(e => e.id === engineToUse)
+        if (primaryEngineObj) {
             items.push({
-                name: "Search with " + defaultEngineObj.name + ": " + searchQuery,
-                icon: defaultEngineObj.icon || "search",
+                name: "Search with " + primaryEngineObj.name + ": " + searchQuery,
+                icon: primaryEngineObj.icon || "search",
                 comment: "Open in browser",
-                action: "search:" + defaultEngine + ":" + searchQuery,
+                action: "search:" + engineToUse + ":" + searchQuery,
                 categories: ["Web Search"]
             })
         }

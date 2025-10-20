@@ -156,18 +156,276 @@ PluginSettings {
         color: Theme.outlineVariant
     }
 
-    ListSettingWithInput {
-        settingKey: "searchEngines"
-        label: "Custom Search Engines"
-        description: "Add your own search engines with custom URLs"
-        defaultValue: []
-        fields: [
-            {id: "id", label: "ID", placeholder: "myengine", width: 120, required: true},
-            {id: "name", label: "Name", placeholder: "My Engine", width: 150, required: true},
-            {id: "icon", label: "Icon", placeholder: "search", width: 100, required: false, default: "search"},
-            {id: "url", label: "URL (use %s for query)", placeholder: "https://example.com/search?q=%s", width: 300, required: true},
-            {id: "keywords", label: "Keywords (comma separated)", placeholder: "my,engine", width: 200, required: false, default: ""}
-        ]
+    Column {
+        spacing: Theme.spacingM
+        width: parent.width
+
+        StyledText {
+            text: "Custom Search Engines"
+            font.pixelSize: Theme.fontSizeMedium
+            font.weight: Font.Medium
+            color: Theme.surfaceText
+        }
+
+        StyledText {
+            text: "Add your own search engines with custom URLs"
+            font.pixelSize: Theme.fontSizeSmall
+            color: Theme.surfaceVariantText
+            width: parent.width
+            wrapMode: Text.WordWrap
+        }
+
+        Flow {
+            width: parent.width
+            spacing: Theme.spacingS
+
+            StyledText {
+                text: "ID"
+                font.pixelSize: Theme.fontSizeSmall
+                font.weight: Font.Medium
+                color: Theme.surfaceText
+                width: 120
+            }
+
+            StyledText {
+                text: "Name"
+                font.pixelSize: Theme.fontSizeSmall
+                font.weight: Font.Medium
+                color: Theme.surfaceText
+                width: 150
+            }
+
+            StyledText {
+                text: "Icon"
+                font.pixelSize: Theme.fontSizeSmall
+                font.weight: Font.Medium
+                color: Theme.surfaceText
+                width: 100
+            }
+
+            StyledText {
+                text: "URL (use %s for query)"
+                font.pixelSize: Theme.fontSizeSmall
+                font.weight: Font.Medium
+                color: Theme.surfaceText
+                width: 300
+            }
+
+            StyledText {
+                text: "Keywords (comma separated)"
+                font.pixelSize: Theme.fontSizeSmall
+                font.weight: Font.Medium
+                color: Theme.surfaceText
+                width: 200
+            }
+        }
+
+        Flow {
+            id: inputRow
+            width: parent.width
+            spacing: Theme.spacingS
+
+            DankTextField {
+                id: idField
+                width: 120
+                placeholderText: "myengine"
+                Keys.onReturnPressed: addButton.clicked()
+            }
+
+            DankTextField {
+                id: nameField
+                width: 150
+                placeholderText: "My Engine"
+                Keys.onReturnPressed: addButton.clicked()
+            }
+
+            DankTextField {
+                id: iconField
+                width: 100
+                placeholderText: "search"
+                Keys.onReturnPressed: addButton.clicked()
+            }
+
+            DankTextField {
+                id: urlField
+                width: 300
+                placeholderText: "https://example.com/search?q=%s"
+                Keys.onReturnPressed: addButton.clicked()
+            }
+
+            DankTextField {
+                id: keywordsField
+                width: 200
+                placeholderText: "my,engine"
+                Keys.onReturnPressed: addButton.clicked()
+            }
+
+            DankButton {
+                id: addButton
+                width: 50
+                height: 36
+                text: "Add"
+
+                onClicked: {
+                    const id = idField.text.trim()
+                    const name = nameField.text.trim()
+                    const url = urlField.text.trim()
+
+                    if (!id || !name || !url) {
+                        return
+                    }
+
+                    const keywordsText = keywordsField.text.trim()
+                    const keywords = keywordsText ? keywordsText.split(",").map(k => k.trim()).filter(k => k.length > 0) : []
+
+                    const newEngine = {
+                        id: id,
+                        name: name,
+                        icon: iconField.text.trim() || "search",
+                        url: url,
+                        keywords: keywords
+                    }
+
+                    const currentEngines = root.loadValue("searchEngines", [])
+                    const updatedEngines = currentEngines.concat([newEngine])
+                    console.log("WebSearchSettings: Saving engines:", JSON.stringify(updatedEngines))
+                    root.saveValue("searchEngines", updatedEngines)
+                    customEnginesList.customEnginesModel = updatedEngines
+                    console.log("WebSearchSettings: Saved engines, verifying:", JSON.stringify(root.loadValue("searchEngines", [])))
+
+                    idField.text = ""
+                    nameField.text = ""
+                    iconField.text = ""
+                    urlField.text = ""
+                    keywordsField.text = ""
+
+                    idField.forceActiveFocus()
+                }
+            }
+        }
+
+        StyledText {
+            text: "Current Items"
+            font.pixelSize: Theme.fontSizeMedium
+            font.weight: Font.Medium
+            color: Theme.surfaceText
+            visible: enginesList.count > 0
+        }
+
+        Column {
+            id: customEnginesList
+            width: parent.width
+            spacing: Theme.spacingS
+
+            property var customEnginesModel: root.loadValue("searchEngines", [])
+
+            Repeater {
+                id: enginesList
+                model: customEnginesList.customEnginesModel
+
+                StyledRect {
+                    width: parent.width
+                    height: 40
+                    radius: Theme.cornerRadius
+                    color: Theme.surfaceContainerHigh
+                    border.width: 0
+
+                    required property int index
+                    required property var modelData
+
+                    Row {
+                        anchors.left: parent.left
+                        anchors.leftMargin: Theme.spacingM
+                        anchors.verticalCenter: parent.verticalCenter
+                        spacing: Theme.spacingM
+
+                        StyledText {
+                            text: modelData.id || ""
+                            color: Theme.surfaceText
+                            font.pixelSize: Theme.fontSizeMedium
+                            width: 120
+                            elide: Text.ElideRight
+                        }
+
+                        StyledText {
+                            text: modelData.name || ""
+                            color: Theme.surfaceText
+                            font.pixelSize: Theme.fontSizeMedium
+                            width: 150
+                            elide: Text.ElideRight
+                        }
+
+                        StyledText {
+                            text: modelData.icon || ""
+                            color: Theme.surfaceText
+                            font.pixelSize: Theme.fontSizeMedium
+                            width: 100
+                            elide: Text.ElideRight
+                        }
+
+                        StyledText {
+                            text: modelData.url || ""
+                            color: Theme.surfaceText
+                            font.pixelSize: Theme.fontSizeMedium
+                            width: 300
+                            elide: Text.ElideRight
+                        }
+
+                        StyledText {
+                            text: {
+                                const kw = modelData.keywords
+                                if (Array.isArray(kw)) {
+                                    return kw.join(", ")
+                                }
+                                return kw || ""
+                            }
+                            color: Theme.surfaceText
+                            font.pixelSize: Theme.fontSizeMedium
+                            width: 200
+                            elide: Text.ElideRight
+                        }
+                    }
+
+                    Rectangle {
+                        anchors.right: parent.right
+                        anchors.rightMargin: Theme.spacingM
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: 60
+                        height: 28
+                        color: removeArea.containsMouse ? Theme.errorHover : Theme.error
+                        radius: Theme.cornerRadius
+
+                        StyledText {
+                            anchors.centerIn: parent
+                            text: "Remove"
+                            color: Theme.onError
+                            font.pixelSize: Theme.fontSizeSmall
+                            font.weight: Font.Medium
+                        }
+
+                        MouseArea {
+                            id: removeArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                const currentEngines = root.loadValue("searchEngines", [])
+                                const updatedEngines = currentEngines.filter((_, i) => i !== index)
+                                root.saveValue("searchEngines", updatedEngines)
+                                customEnginesList.customEnginesModel = updatedEngines
+                            }
+                        }
+                    }
+                }
+            }
+
+            StyledText {
+                text: "No items added yet"
+                font.pixelSize: Theme.fontSizeSmall
+                color: Theme.surfaceVariantText
+                visible: enginesList.count === 0
+            }
+        }
     }
 
     StyledRect {

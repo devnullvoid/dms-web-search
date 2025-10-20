@@ -178,11 +178,22 @@ Item {
 
     Component.onCompleted: {
         console.log("WebSearch: Plugin loaded")
+        loadSettings()
+    }
 
+    onPluginServiceChanged: {
+        if (pluginService) {
+            console.log("WebSearch: pluginService connected")
+            loadSettings()
+        }
+    }
+
+    function loadSettings() {
         if (pluginService) {
             trigger = pluginService.loadPluginData("webSearch", "trigger", "?")
             defaultEngine = pluginService.loadPluginData("webSearch", "defaultEngine", "google")
             searchEngines = pluginService.loadPluginData("webSearch", "searchEngines", [])
+            console.log("WebSearch: Loaded searchEngines:", JSON.stringify(searchEngines))
         }
     }
 

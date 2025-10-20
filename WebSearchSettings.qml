@@ -156,115 +156,163 @@ PluginSettings {
         color: Theme.outlineVariant
     }
 
-    Column {
-        spacing: Theme.spacingM
+    StyledRect {
         width: parent.width
+        height: addEngineColumn.implicitHeight + Theme.spacingL * 2
+        radius: Theme.cornerRadius
+        color: Theme.surfaceContainerHigh
 
-        StyledText {
-            text: "Custom Search Engines"
-            font.pixelSize: Theme.fontSizeMedium
-            font.weight: Font.Medium
-            color: Theme.surfaceText
-        }
-
-        StyledText {
-            text: "Add your own search engines with custom URLs"
-            font.pixelSize: Theme.fontSizeSmall
-            color: Theme.surfaceVariantText
-            width: parent.width
-            wrapMode: Text.WordWrap
-        }
-
-        Flow {
-            width: parent.width
-            spacing: Theme.spacingS
+        Column {
+            id: addEngineColumn
+            anchors.fill: parent
+            anchors.margins: Theme.spacingL
+            spacing: Theme.spacingM
 
             StyledText {
-                text: "ID"
-                font.pixelSize: Theme.fontSizeSmall
+                text: "Create Custom Search Engine"
+                font.pixelSize: Theme.fontSizeMedium
                 font.weight: Font.Medium
                 color: Theme.surfaceText
-                width: 120
             }
 
-            StyledText {
-                text: "Name"
-                font.pixelSize: Theme.fontSizeSmall
-                font.weight: Font.Medium
-                color: Theme.surfaceText
-                width: 150
+            Row {
+                width: parent.width
+                spacing: Theme.spacingM
+
+                Column {
+                    width: (parent.width - Theme.spacingM) / 2
+                    spacing: Theme.spacingXS
+
+                    StyledText {
+                        text: "Engine ID *"
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.surfaceVariantText
+                    }
+
+                    DankTextField {
+                        id: idField
+                        width: parent.width
+                        placeholderText: "e.g., myengine"
+                        keyNavigationTab: nameField
+                        onFocusStateChanged: hasFocus => {
+                            if (hasFocus) root.ensureItemVisible(idField)
+                        }
+                    }
+                }
+
+                Column {
+                    width: (parent.width - Theme.spacingM) / 2
+                    spacing: Theme.spacingXS
+
+                    StyledText {
+                        text: "Display Name *"
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.surfaceVariantText
+                    }
+
+                    DankTextField {
+                        id: nameField
+                        width: parent.width
+                        placeholderText: "e.g., My Engine"
+                        keyNavigationBacktab: idField
+                        keyNavigationTab: iconField
+                        onFocusStateChanged: hasFocus => {
+                            if (hasFocus) root.ensureItemVisible(nameField)
+                        }
+                    }
+                }
             }
 
-            StyledText {
-                text: "Icon"
-                font.pixelSize: Theme.fontSizeSmall
-                font.weight: Font.Medium
-                color: Theme.surfaceText
-                width: 100
+            Row {
+                width: parent.width
+                spacing: Theme.spacingM
+
+                Column {
+                    width: (parent.width - Theme.spacingM) / 2
+                    spacing: Theme.spacingXS
+
+                    StyledText {
+                        text: "Icon Name"
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.surfaceVariantText
+                    }
+
+                    DankTextField {
+                        id: iconField
+                        width: parent.width
+                        placeholderText: "e.g., search"
+                        keyNavigationBacktab: nameField
+                        keyNavigationTab: urlField
+                        onFocusStateChanged: hasFocus => {
+                            if (hasFocus) root.ensureItemVisible(iconField)
+                        }
+                    }
+                }
+
+                Column {
+                    width: (parent.width - Theme.spacingM) / 2
+                    spacing: Theme.spacingXS
+
+                    StyledText {
+                        text: "Search URL *"
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.surfaceVariantText
+                    }
+
+                    DankTextField {
+                        id: urlField
+                        width: parent.width
+                        placeholderText: "e.g., https://example.com/search?q=%s"
+                        keyNavigationBacktab: iconField
+                        keyNavigationTab: keywordsField
+                        onFocusStateChanged: hasFocus => {
+                            if (hasFocus) root.ensureItemVisible(urlField)
+                        }
+                    }
+
+                    StyledText {
+                        text: "Use %s as placeholder for search query"
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.surfaceVariantText
+                        wrapMode: Text.WordWrap
+                        width: parent.width
+                    }
+                }
             }
 
-            StyledText {
-                text: "URL (use %s for query)"
-                font.pixelSize: Theme.fontSizeSmall
-                font.weight: Font.Medium
-                color: Theme.surfaceText
-                width: 300
-            }
+            Column {
+                width: parent.width
+                spacing: Theme.spacingXS
 
-            StyledText {
-                text: "Keywords (comma separated)"
-                font.pixelSize: Theme.fontSizeSmall
-                font.weight: Font.Medium
-                color: Theme.surfaceText
-                width: 200
-            }
-        }
+                StyledText {
+                    text: "Keywords (comma separated)"
+                    font.pixelSize: Theme.fontSizeSmall
+                    color: Theme.surfaceVariantText
+                }
 
-        Flow {
-            id: inputRow
-            width: parent.width
-            spacing: Theme.spacingS
+                DankTextField {
+                    id: keywordsField
+                    width: parent.width
+                    placeholderText: "e.g., my,engine,search"
+                    keyNavigationBacktab: urlField
+                    onFocusStateChanged: hasFocus => {
+                        if (hasFocus) root.ensureItemVisible(keywordsField)
+                    }
+                }
 
-            DankTextField {
-                id: idField
-                width: 120
-                placeholderText: "myengine"
-                Keys.onReturnPressed: addButton.clicked()
-            }
-
-            DankTextField {
-                id: nameField
-                width: 150
-                placeholderText: "My Engine"
-                Keys.onReturnPressed: addButton.clicked()
-            }
-
-            DankTextField {
-                id: iconField
-                width: 100
-                placeholderText: "search"
-                Keys.onReturnPressed: addButton.clicked()
-            }
-
-            DankTextField {
-                id: urlField
-                width: 300
-                placeholderText: "https://example.com/search?q=%s"
-                Keys.onReturnPressed: addButton.clicked()
-            }
-
-            DankTextField {
-                id: keywordsField
-                width: 200
-                placeholderText: "my,engine"
-                Keys.onReturnPressed: addButton.clicked()
+                StyledText {
+                    text: "Use these keywords to trigger this engine (e.g., '? keyword query')"
+                    font.pixelSize: Theme.fontSizeSmall
+                    color: Theme.surfaceVariantText
+                    wrapMode: Text.WordWrap
+                    width: parent.width
+                }
             }
 
             DankButton {
                 id: addButton
-                width: 50
-                height: 36
-                text: "Add"
+                text: "Create Engine"
+                iconName: "add"
 
                 onClicked: {
                     const id = idField.text.trim()
@@ -272,6 +320,9 @@ PluginSettings {
                     const url = urlField.text.trim()
 
                     if (!id || !name || !url) {
+                        if (typeof ToastService !== "undefined") {
+                            ToastService.showError("Please fill in required fields (ID, Name, URL)")
+                        }
                         return
                     }
 
@@ -289,7 +340,6 @@ PluginSettings {
                     const currentEngines = root.loadValue("searchEngines", [])
                     const updatedEngines = currentEngines.concat([newEngine])
                     root.saveValue("searchEngines", updatedEngines)
-                    customEnginesList.customEnginesModel = updatedEngines
 
                     idField.text = ""
                     nameField.text = ""
@@ -301,127 +351,149 @@ PluginSettings {
                 }
             }
         }
+    }
 
-        StyledText {
-            text: "Current Items"
-            font.pixelSize: Theme.fontSizeMedium
-            font.weight: Font.Medium
-            color: Theme.surfaceText
-            visible: enginesList.count > 0
-        }
+    StyledRect {
+        width: parent.width
+        height: Math.max(200, enginesColumn.implicitHeight + Theme.spacingL * 2)
+        radius: Theme.cornerRadius
+        color: Theme.surfaceContainerHigh
 
         Column {
-            id: customEnginesList
-            width: parent.width
-            spacing: Theme.spacingS
-
-            property var customEnginesModel: root.loadValue("searchEngines", [])
-
-            Repeater {
-                id: enginesList
-                model: customEnginesList.customEnginesModel
-
-                StyledRect {
-                    width: parent.width
-                    height: 40
-                    radius: Theme.cornerRadius
-                    color: Theme.surfaceContainerHigh
-                    border.width: 0
-
-                    required property int index
-                    required property var modelData
-
-                    Row {
-                        anchors.left: parent.left
-                        anchors.leftMargin: Theme.spacingM
-                        anchors.verticalCenter: parent.verticalCenter
-                        spacing: Theme.spacingM
-
-                        StyledText {
-                            text: modelData.id || ""
-                            color: Theme.surfaceText
-                            font.pixelSize: Theme.fontSizeMedium
-                            width: 120
-                            elide: Text.ElideRight
-                        }
-
-                        StyledText {
-                            text: modelData.name || ""
-                            color: Theme.surfaceText
-                            font.pixelSize: Theme.fontSizeMedium
-                            width: 150
-                            elide: Text.ElideRight
-                        }
-
-                        StyledText {
-                            text: modelData.icon || ""
-                            color: Theme.surfaceText
-                            font.pixelSize: Theme.fontSizeMedium
-                            width: 100
-                            elide: Text.ElideRight
-                        }
-
-                        StyledText {
-                            text: modelData.url || ""
-                            color: Theme.surfaceText
-                            font.pixelSize: Theme.fontSizeMedium
-                            width: 300
-                            elide: Text.ElideRight
-                        }
-
-                        StyledText {
-                            text: {
-                                const kw = modelData.keywords
-                                if (Array.isArray(kw)) {
-                                    return kw.join(", ")
-                                }
-                                return kw || ""
-                            }
-                            color: Theme.surfaceText
-                            font.pixelSize: Theme.fontSizeMedium
-                            width: 200
-                            elide: Text.ElideRight
-                        }
-                    }
-
-                    Rectangle {
-                        anchors.right: parent.right
-                        anchors.rightMargin: Theme.spacingM
-                        anchors.verticalCenter: parent.verticalCenter
-                        width: 60
-                        height: 28
-                        color: removeArea.containsMouse ? Theme.errorHover : Theme.error
-                        radius: Theme.cornerRadius
-
-                        StyledText {
-                            anchors.centerIn: parent
-                            text: "Remove"
-                            color: Theme.onError
-                            font.pixelSize: Theme.fontSizeSmall
-                            font.weight: Font.Medium
-                        }
-
-                        MouseArea {
-                            id: removeArea
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: {
-                                const currentEngines = root.loadValue("searchEngines", [])
-                                const updatedEngines = currentEngines.filter((_, i) => i !== index)
-                                root.saveValue("searchEngines", updatedEngines)
-                                customEnginesList.customEnginesModel = updatedEngines
-                            }
-                        }
-                    }
-                }
-            }
+            id: enginesColumn
+            anchors.fill: parent
+            anchors.margins: Theme.spacingL
+            spacing: Theme.spacingM
 
             StyledText {
-                text: "No items added yet"
-                font.pixelSize: Theme.fontSizeSmall
-                color: Theme.surfaceVariantText
-                visible: enginesList.count === 0
+                text: "Existing Custom Engines"
+                font.pixelSize: Theme.fontSizeMedium
+                font.weight: Font.Medium
+                color: Theme.surfaceText
+            }
+
+            ListView {
+                width: parent.width
+                height: Math.max(100, contentHeight)
+                clip: true
+                spacing: Theme.spacingXS
+
+                model: root.variantsModel.count > 0 ? root.variantsModel : root.loadValue("searchEngines", [])
+
+                delegate: StyledRect {
+                    required property var model
+                    required property int index
+
+                    width: ListView.view.width
+                    height: engineColumn.implicitHeight + Theme.spacingM * 2
+                    radius: Theme.cornerRadius
+                    color: engineMouseArea.containsMouse ? Theme.surfaceContainerHighest : Theme.surfaceContainer
+
+                    Column {
+                        id: engineColumn
+                        anchors.fill: parent
+                        anchors.margins: Theme.spacingM
+                        spacing: Theme.spacingXS
+
+                        Row {
+                            width: parent.width
+                            spacing: Theme.spacingM
+
+                            Item {
+                                width: Theme.iconSize
+                                height: Theme.iconSize
+                                anchors.verticalCenter: parent.verticalCenter
+
+                                DankIcon {
+                                    anchors.centerIn: parent
+                                    name: model.icon || "search"
+                                    size: Theme.iconSize
+                                    color: Theme.surfaceText
+                                }
+                            }
+
+                            Column {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 2
+                                width: parent.width - Theme.iconSize - deleteButton.width - Theme.spacingM * 3
+
+                                StyledText {
+                                    text: model.name || "Unnamed"
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    font.weight: Font.Medium
+                                    color: Theme.surfaceText
+                                    width: parent.width
+                                    elide: Text.ElideRight
+                                }
+
+                                StyledText {
+                                    text: "ID: " + (model.id || "") + " | URL: " + (model.url || "")
+                                    font.pixelSize: Theme.fontSizeSmall
+                                    color: Theme.surfaceVariantText
+                                    width: parent.width
+                                    elide: Text.ElideRight
+                                }
+
+                                StyledText {
+                                    text: {
+                                        const kw = model.keywords
+                                        if (Array.isArray(kw) && kw.length > 0) {
+                                            return "Keywords: " + kw.join(", ")
+                                        }
+                                        return "No keywords"
+                                    }
+                                    font.pixelSize: Theme.fontSizeSmall
+                                    color: Theme.surfaceVariantText
+                                    width: parent.width
+                                    elide: Text.ElideRight
+                                }
+                            }
+
+                            Rectangle {
+                                id: deleteButton
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: 32
+                                height: 32
+                                radius: 16
+                                color: deleteArea.containsMouse ? Theme.error : "transparent"
+
+                                DankIcon {
+                                    anchors.centerIn: parent
+                                    name: "delete"
+                                    size: 16
+                                    color: deleteArea.containsMouse ? Theme.onError : Theme.surfaceVariantText
+                                }
+
+                                MouseArea {
+                                    id: deleteArea
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: {
+                                        const currentEngines = root.loadValue("searchEngines", [])
+                                        const updatedEngines = currentEngines.filter((_, i) => i !== index)
+                                        root.saveValue("searchEngines", updatedEngines)
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    MouseArea {
+                        id: engineMouseArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        propagateComposedEvents: true
+                    }
+                }
+
+                StyledText {
+                    anchors.centerIn: parent
+                    text: "No custom engines created yet"
+                    font.pixelSize: Theme.fontSizeSmall
+                    color: Theme.surfaceVariantText
+                    visible: parent.count === 0
+                }
             }
         }
     }

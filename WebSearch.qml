@@ -229,8 +229,9 @@ Item {
             return items
         }
 
-        let engineToUse = defaultEngine
+        let matchedEngineId = null
         let searchQuery = query.trim()
+        let fallbackQuery = query.trim()
 
         for (let i = 0; i < allEngines.length; i++) {
             const engine = allEngines[i]
@@ -238,41 +239,38 @@ Item {
                 for (let k = 0; k < engine.keywords.length; k++) {
                     const keyword = engine.keywords[k]
                     if (searchQuery.toLowerCase().startsWith(keyword + " ")) {
-                        engineToUse = engine.id
+                        matchedEngineId = engine.id
                         searchQuery = searchQuery.substring(keyword.length + 1).trim()
                         break
                     }
                 }
+                if (matchedEngineId) break
             }
         }
 
-        const primaryEngineObj = allEngines.find(e => e.id === engineToUse)
+        const primaryEngineId = matchedEngineId || defaultEngine
+        const primaryEngineObj = allEngines.find(e => e.id === primaryEngineId)
+
         if (primaryEngineObj) {
             items.push({
                 name: "Search with " + primaryEngineObj.name + ": " + searchQuery,
                 icon: primaryEngineObj.icon || "search",
                 comment: "Open in browser",
-                action: "search:" + engineToUse + ":" + searchQuery,
+                action: "search:" + primaryEngineId + ":" + searchQuery,
                 categories: ["Web Search"]
             })
         }
 
         for (let i = 0; i < allEngines.length; i++) {
             const engine = allEngines[i]
-            if (engine.id !== defaultEngine) {
-                const matches = !query ||
-                    engine.name.toLowerCase().includes(query.toLowerCase()) ||
-                    (engine.keywords && engine.keywords.some(k => k.includes(query.toLowerCase())))
-
-                if (matches || allEngines.length <= 10) {
-                    items.push({
-                        name: "Search with " + engine.name + ": " + searchQuery,
-                        icon: engine.icon || "search",
-                        comment: "Open in browser",
-                        action: "search:" + engine.id + ":" + searchQuery,
-                        categories: ["Web Search"]
-                    })
-                }
+            if (engine.id !== primaryEngineId) {
+                items.push({
+                    name: "Search with " + engine.name + ": " + (matchedEngineId ? fallbackQuery : searchQuery),
+                    icon: engine.icon || "search",
+                    comment: "Open in browser",
+                    action: "search:" + engine.id + ":" + (matchedEngineId ? fallbackQuery : searchQuery),
+                    categories: ["Web Search"]
+                })
             }
         }
 

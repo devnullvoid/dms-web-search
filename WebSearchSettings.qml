@@ -288,10 +288,8 @@ PluginSettings {
 
                     const currentEngines = root.loadValue("searchEngines", [])
                     const updatedEngines = currentEngines.concat([newEngine])
-                    console.log("WebSearchSettings: Saving engines:", JSON.stringify(updatedEngines))
                     root.saveValue("searchEngines", updatedEngines)
                     customEnginesList.customEnginesModel = updatedEngines
-                    console.log("WebSearchSettings: Saved engines, verifying:", JSON.stringify(root.loadValue("searchEngines", [])))
 
                     idField.text = ""
                     nameField.text = ""

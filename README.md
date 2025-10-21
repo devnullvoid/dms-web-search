@@ -2,6 +2,9 @@
 
 A DankMaterialShell launcher plugin for searching the web with 23+ built-in search engines and support for custom search engines.
 
+![Screenshot](screenshot.png)
+
+
 ## Features
 
 - **23+ Built-in Search Engines** - Google, DuckDuckGo, GitHub, Stack Overflow, and more

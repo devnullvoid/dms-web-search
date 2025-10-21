@@ -242,7 +242,7 @@ PluginSettings {
             DankTextField {
                 id: iconField
                 width: 100
-                placeholderText: "search"
+                placeholderText: "material:search"
                 Keys.onReturnPressed: addButton.clicked()
             }
 
@@ -281,7 +281,7 @@ PluginSettings {
                     const newEngine = {
                         id: id,
                         name: name,
-                        icon: iconField.text.trim() || "search",
+                        icon: iconField.text.trim() || "material:search",
                         url: url,
                         keywords: keywords
                     }

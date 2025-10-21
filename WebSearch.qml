@@ -16,161 +16,161 @@ Item {
         {
             id: "google",
             name: "Google",
-            icon: "search",
+            icon: "material:search",
             url: "https://www.google.com/search?q=%s",
             keywords: ["google", "search"]
         },
         {
             id: "duckduckgo",
             name: "DuckDuckGo",
-            icon: "privacy_tip",
+            icon: "material:privacy_tip",
             url: "https://duckduckgo.com/?q=%s",
             keywords: ["ddg", "duckduckgo", "privacy"]
         },
         {
             id: "brave",
             name: "Brave Search",
-            icon: "security",
+            icon: "material:security",
             url: "https://search.brave.com/search?q=%s",
             keywords: ["brave", "privacy"]
         },
         {
             id: "bing",
             name: "Bing",
-            icon: "search",
+            icon: "material:search",
             url: "https://www.bing.com/search?q=%s",
             keywords: ["bing", "microsoft"]
         },
         {
             id: "youtube",
             name: "YouTube",
-            icon: "videocam",
+            icon: "material:videocam",
             url: "https://www.youtube.com/results?search_query=%s",
             keywords: ["youtube", "video", "yt"]
         },
         {
             id: "github",
             name: "GitHub",
-            icon: "code",
+            icon: "material:code",
             url: "https://github.com/search?q=%s",
             keywords: ["github", "code", "git"]
         },
         {
             id: "stackoverflow",
             name: "Stack Overflow",
-            icon: "question_answer",
+            icon: "material:question_answer",
             url: "https://stackoverflow.com/search?q=%s",
             keywords: ["stackoverflow", "stack", "coding"]
         },
         {
             id: "reddit",
             name: "Reddit",
-            icon: "forum",
+            icon: "material:forum",
             url: "https://www.reddit.com/search?q=%s",
             keywords: ["reddit"]
         },
         {
             id: "wikipedia",
             name: "Wikipedia",
-            icon: "menu_book",
+            icon: "material:menu_book",
             url: "https://en.wikipedia.org/wiki/Special:Search?search=%s",
             keywords: ["wikipedia", "wiki"]
         },
         {
             id: "amazon",
             name: "Amazon",
-            icon: "shopping_cart",
+            icon: "material:shopping_cart",
             url: "https://www.amazon.com/s?k=%s",
             keywords: ["amazon", "shop", "shopping"]
         },
         {
             id: "ebay",
             name: "eBay",
-            icon: "shopping_bag",
+            icon: "material:shopping_bag",
             url: "https://www.ebay.com/sch/i.html?_nkw=%s",
             keywords: ["ebay", "shop", "auction"]
         },
         {
             id: "maps",
             name: "Google Maps",
-            icon: "map",
+            icon: "material:map",
             url: "https://www.google.com/maps/search/%s",
             keywords: ["maps", "location", "directions"]
         },
         {
             id: "images",
             name: "Google Images",
-            icon: "image",
+            icon: "material:image",
             url: "https://www.google.com/search?tbm=isch&q=%s",
             keywords: ["images", "pictures", "photos"]
         },
         {
             id: "twitter",
             name: "Twitter/X",
-            icon: "tag",
+            icon: "material:tag",
             url: "https://twitter.com/search?q=%s",
             keywords: ["twitter", "x", "social"]
         },
         {
             id: "linkedin",
             name: "LinkedIn",
-            icon: "work",
+            icon: "material:work",
             url: "https://www.linkedin.com/search/results/all/?keywords=%s",
             keywords: ["linkedin", "job", "professional"]
         },
         {
             id: "imdb",
             name: "IMDb",
-            icon: "movie",
+            icon: "material:movie",
             url: "https://www.imdb.com/find?q=%s",
             keywords: ["imdb", "movies", "tv"]
         },
         {
             id: "translate",
             name: "Google Translate",
-            icon: "translate",
+            icon: "material:translate",
             url: "https://translate.google.com/?text=%s",
             keywords: ["translate", "translation"]
         },
         {
             id: "archlinux",
             name: "Arch Linux Packages",
-            icon: "inventory_2",
+            icon: "material:inventory_2",
             url: "https://archlinux.org/packages/?q=%s",
             keywords: ["arch", "linux", "packages"]
         },
         {
             id: "aur",
             name: "AUR",
-            icon: "code",
+            icon: "material:code",
             url: "https://aur.archlinux.org/packages?K=%s",
             keywords: ["aur", "arch", "packages"]
         },
         {
             id: "npmjs",
             name: "npm",
-            icon: "package",
+            icon: "material:package",
             url: "https://www.npmjs.com/search?q=%s",
             keywords: ["npm", "node", "javascript"]
         },
         {
             id: "pypi",
             name: "PyPI",
-            icon: "code",
+            icon: "material:code",
             url: "https://pypi.org/search/?q=%s",
             keywords: ["pypi", "python", "pip"]
         },
         {
             id: "crates",
             name: "crates.io",
-            icon: "package",
+            icon: "material:package",
             url: "https://crates.io/search?q=%s",
             keywords: ["crates", "rust", "cargo"]
         },
         {
             id: "mdn",
             name: "MDN Web Docs",
-            icon: "code",
+            icon: "material:code",
             url: "https://developer.mozilla.org/en-US/search?q=%s",
             keywords: ["mdn", "mozilla", "web", "docs"]
         }
@@ -201,7 +201,7 @@ Item {
         if (!query || query.trim().length === 0) {
             items.push({
                 name: "Type a search query",
-                icon: "search",
+                icon: "material:search",
                 comment: "Search the web with your default engine (" + getEngineName(defaultEngine) + ")",
                 action: "noop",
                 categories: ["Web Search"]
@@ -209,7 +209,7 @@ Item {
 
             items.push({
                 name: "──────── Available Search Engines ────────",
-                icon: "apps",
+                icon: "material:apps",
                 comment: "Built-in and custom search engines",
                 action: "noop",
                 categories: ["Web Search"]
@@ -219,7 +219,7 @@ Item {
                 const engine = allEngines[i]
                 items.push({
                     name: engine.name,
-                    icon: engine.icon || "search",
+                    icon: engine.icon || "material:search",
                     comment: engine.keywords ? engine.keywords.join(", ") : "Search engine",
                     action: "noop",
                     categories: ["Web Search"]
@@ -250,7 +250,7 @@ Item {
         if (primaryEngineObj) {
             items.push({
                 name: "Search with " + primaryEngineObj.name + ": " + searchQuery,
-                icon: primaryEngineObj.icon || "search",
+                icon: primaryEngineObj.icon || "material:search",
                 comment: "Open in browser",
                 action: "search:" + engineToUse + ":" + searchQuery,
                 categories: ["Web Search"]
@@ -267,7 +267,7 @@ Item {
                 if (matches || allEngines.length <= 10) {
                     items.push({
                         name: "Search with " + engine.name + ": " + searchQuery,
-                        icon: engine.icon || "search",
+                        icon: engine.icon || "material:search",
                         comment: "Open in browser",
                         action: "search:" + engine.id + ":" + searchQuery,
                         categories: ["Web Search"]

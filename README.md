@@ -2,6 +2,8 @@
 
 A DankMaterialShell launcher plugin for searching the web with 23+ built-in search engines and support for custom search engines.
 
+![Web Search Screenshot](screenshot.png)
+
 ## Features
 
 - **23+ Built-in Search Engines** - Google, DuckDuckGo, GitHub, Stack Overflow, and more
@@ -175,7 +177,7 @@ Access settings via DMS Settings → Plugins → Web Search:
 
 ## Compatibility
 
-- **Compositors**: Niri, Hyprland, Sway, and any Wayland compositor
+- **Compositors**: Niri and Hyprland
 - **Distros**: Universal - works on any Linux distribution
 - **Browsers**: Works with any default browser
 

@@ -23,14 +23,14 @@ Item {
         {
             id: "duckduckgo",
             name: "DuckDuckGo",
-            icon: "privacy_tip",
+            icon: "security-high",
             url: "https://duckduckgo.com/?q=%s",
             keywords: ["ddg", "duckduckgo", "privacy"]
         },
         {
             id: "brave",
             name: "Brave Search",
-            icon: "security",
+            icon: "search",
             url: "https://search.brave.com/search?q=%s",
             keywords: ["brave", "privacy"]
         },
@@ -44,7 +44,7 @@ Item {
         {
             id: "youtube",
             name: "YouTube",
-            icon: "videocam",
+            icon: "video-x-generic",
             url: "https://www.youtube.com/results?search_query=%s",
             keywords: ["youtube", "video", "yt"]
         },
@@ -58,42 +58,42 @@ Item {
         {
             id: "stackoverflow",
             name: "Stack Overflow",
-            icon: "question_answer",
+            icon: "help-faq",
             url: "https://stackoverflow.com/search?q=%s",
             keywords: ["stackoverflow", "stack", "coding"]
         },
         {
             id: "reddit",
             name: "Reddit",
-            icon: "forum",
+            icon: "internet-chat",
             url: "https://www.reddit.com/search?q=%s",
             keywords: ["reddit"]
         },
         {
             id: "wikipedia",
             name: "Wikipedia",
-            icon: "menu_book",
+            icon: "accessories-dictionary",
             url: "https://en.wikipedia.org/wiki/Special:Search?search=%s",
             keywords: ["wikipedia", "wiki"]
         },
         {
             id: "amazon",
             name: "Amazon",
-            icon: "shopping_cart",
+            icon: "package",
             url: "https://www.amazon.com/s?k=%s",
             keywords: ["amazon", "shop", "shopping"]
         },
         {
             id: "ebay",
             name: "eBay",
-            icon: "shopping_bag",
+            icon: "package",
             url: "https://www.ebay.com/sch/i.html?_nkw=%s",
             keywords: ["ebay", "shop", "auction"]
         },
         {
             id: "maps",
             name: "Google Maps",
-            icon: "map",
+            icon: "mark-location",
             url: "https://www.google.com/maps/search/%s",
             keywords: ["maps", "location", "directions"]
         },
@@ -114,14 +114,14 @@ Item {
         {
             id: "linkedin",
             name: "LinkedIn",
-            icon: "work",
+            icon: "view-media-publisher",
             url: "https://www.linkedin.com/search/results/all/?keywords=%s",
             keywords: ["linkedin", "job", "professional"]
         },
         {
             id: "imdb",
             name: "IMDb",
-            icon: "movie",
+            icon: "video-television",
             url: "https://www.imdb.com/find?q=%s",
             keywords: ["imdb", "movies", "tv"]
         },
@@ -135,7 +135,7 @@ Item {
         {
             id: "archlinux",
             name: "Arch Linux Packages",
-            icon: "inventory_2",
+            icon: "package-x-generic",
             url: "https://archlinux.org/packages/?q=%s",
             keywords: ["arch", "linux", "packages"]
         },

@@ -2,13 +2,19 @@
   "id": "webSearch",
   "name": "Web Search",
   "description": "Search the web with custom search engines",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "devnullvoid",
   "icon": "search",
   "type": "launcher",
-  "capabilities": ["web-search", "custom-engines"],
+  "capabilities": [
+    "web-search",
+    "custom-engines"
+  ],
   "component": "./WebSearch.qml",
   "settings": "./WebSearchSettings.qml",
   "trigger": "?",
-  "permissions": ["settings_read", "settings_write"]
+  "permissions": [
+    "settings_read",
+    "settings_write"
+  ]
 }

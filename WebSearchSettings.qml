@@ -232,7 +232,7 @@ PluginSettings {
                     spacing: Theme.spacingXS
 
                     StyledText {
-                        text: "Icon Name"
+                        text: "Icon"
                         font.pixelSize: Theme.fontSizeSmall
                         color: Theme.surfaceVariantText
                     }
@@ -240,12 +240,20 @@ PluginSettings {
                     DankTextField {
                         id: iconField
                         width: parent.width
-                        placeholderText: "e.g., search"
+                        placeholderText: "e.g., unicode:🔍"
                         keyNavigationBacktab: nameField
                         keyNavigationTab: urlField
                         onFocusStateChanged: hasFocus => {
                             if (hasFocus) root.ensureItemVisible(iconField)
                         }
+                    }
+
+                    StyledText {
+                        text: "Prefix with 'unicode:' to use emoji or other unicode symbols."
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.surfaceVariantText
+                        wrapMode: Text.WordWrap
+                        width: parent.width
                     }
                 }
 
@@ -332,7 +340,7 @@ PluginSettings {
                     const newEngine = {
                         id: id,
                         name: name,
-                        icon: iconField.text.trim() || "search",
+                        icon: iconField.text.trim() || "unicode:🔍",
                         url: url,
                         keywords: keywords
                     }
@@ -406,7 +414,7 @@ PluginSettings {
 
                                 DankIcon {
                                     anchors.centerIn: parent
-                                    name: model.icon || "search"
+                                    name: model.icon || "unicode:🔍"
                                     size: Theme.iconSize
                                     color: Theme.surfaceText
                                 }

@@ -17,11 +17,13 @@ A DankMaterialShell launcher plugin for searching the web with 23+ built-in sear
 ## Installation
 
 ### From Plugin Registry (Recommended)
+
 ```bash
 # Coming soon - will be available via DMS plugin manager
 ```
 
 ### Manual Installation
+
 ```bash
 # Copy plugin to DMS plugins directory
 cp -r WebSearch ~/.config/DankMaterialShell/plugins/
@@ -36,6 +38,7 @@ cp -r WebSearch ~/.config/DankMaterialShell/plugins/
 ## Usage
 
 ### Basic Search
+
 1. Open launcher (Ctrl+Space)
 2. Type `?` followed by search query
 3. Examples:
@@ -44,7 +47,9 @@ cp -r WebSearch ~/.config/DankMaterialShell/plugins/
 4. Select engine and press Enter to open browser
 
 ### Engine-Specific Search
+
 Use keywords to search specific engines directly:
+
 - `? github awesome-linux` - Search GitHub
 - `? youtube music video` - Search YouTube
 - `? wiki quantum physics` - Search Wikipedia
@@ -53,12 +58,14 @@ Use keywords to search specific engines directly:
 ## Built-in Search Engines
 
 ### General Search
+
 - **Google** - Keywords: `google`, `search`
 - **DuckDuckGo** - Keywords: `ddg`, `duckduckgo`, `privacy`
 - **Brave Search** - Keywords: `brave`, `privacy`
 - **Bing** - Keywords: `bing`, `microsoft`
 
 ### Development
+
 - **GitHub** - Keywords: `github`, `code`, `git`
 - **Stack Overflow** - Keywords: `stackoverflow`, `stack`, `coding`
 - **npm** - Keywords: `npm`, `node`, `javascript`
@@ -67,25 +74,30 @@ Use keywords to search specific engines directly:
 - **MDN Web Docs** - Keywords: `mdn`, `mozilla`, `web`, `docs`
 
 ### Linux & Packages
-- **Arch Linux Packages** - Keywords: `arch`, `linux`, `packages`
+
+- **Arch Linux Wiki** - Keywords: `arch`, `linux`, `packages`
 - **AUR** - Keywords: `aur`, `arch`, `packages`
 
 ### Social & Media
+
 - **YouTube** - Keywords: `youtube`, `video`, `yt`
 - **Reddit** - Keywords: `reddit`
 - **Twitter/X** - Keywords: `twitter`, `x`, `social`
 - **LinkedIn** - Keywords: `linkedin`, `job`, `professional`
 
 ### Reference
+
 - **Wikipedia** - Keywords: `wikipedia`, `wiki`
 - **Google Translate** - Keywords: `translate`, `translation`
 - **IMDb** - Keywords: `imdb`, `movies`, `tv`
 
 ### Shopping
+
 - **Amazon** - Keywords: `amazon`, `shop`, `shopping`
 - **eBay** - Keywords: `ebay`, `shop`, `auction`
 
 ### Utilities
+
 - **Google Maps** - Keywords: `maps`, `location`, `directions`
 - **Google Images** - Keywords: `images`, `pictures`, `photos`
 
@@ -105,6 +117,7 @@ Add your own search engines via Settings:
 ### Example Custom Engines
 
 **Rust Documentation:**
+
 ```
 ID: rustdoc
 Name: Rust Docs
@@ -114,6 +127,7 @@ Keywords: rust,docs,documentation
 ```
 
 **Arch Wiki:**
+
 ```
 ID: archwiki
 Name: Arch Wiki
@@ -123,6 +137,7 @@ Keywords: arch,wiki,documentation
 ```
 
 **GitLab:**
+
 ```
 ID: gitlab
 Name: GitLab
@@ -142,12 +157,14 @@ Access settings via DMS Settings → Plugins → Web Search:
 ## Search Examples
 
 ### General Queries
+
 ```
 ? rust programming         # Search with default engine
 ? how to install arch      # General search
 ```
 
 ### Development
+
 ```
 ? github awesome-linux     # Search GitHub
 ? stackoverflow async rust # Search Stack Overflow
@@ -156,6 +173,7 @@ Access settings via DMS Settings → Plugins → Web Search:
 ```
 
 ### Linux
+
 ```
 ? arch firefox             # Search Arch packages
 ? aur brave-bin            # Search AUR
@@ -163,6 +181,7 @@ Access settings via DMS Settings → Plugins → Web Search:
 ```
 
 ### Media
+
 ```
 ? youtube rust tutorial    # Search YouTube
 ? reddit linux gaming      # Search Reddit

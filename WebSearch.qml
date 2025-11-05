@@ -44,14 +44,14 @@ Item {
         {
             id: "youtube",
             name: "YouTube",
-            icon: "material:smart_display",
+            icon: "material:youtube_activity",
             url: "https://www.youtube.com/results?search_query=%s",
             keywords: ["youtube", "video", "yt"]
         },
         {
             id: "github",
             name: "GitHub",
-            icon: "unicode:",
+            icon: "unicode:",
             url: "https://github.com/search?q=%s",
             keywords: ["github", "code", "git"]
         },
@@ -121,7 +121,7 @@ Item {
         {
             id: "imdb",
             name: "IMDb",
-            icon: "material:live_tv",
+            icon: "unicode:",
             url: "https://www.imdb.com/find?q=%s",
             keywords: ["imdb", "movies", "tv"]
         },
@@ -134,15 +134,15 @@ Item {
         },
         {
             id: "archlinux",
-            name: "Arch Linux Packages",
-            icon: "unicode:",
-            url: "https://archlinux.org/packages/?q=%s",
+            name: "Arch Linux Wiki",
+            icon: "material:terminal",
+            url: "https://wiki.archlinux.org/index.php?search=%s",
             keywords: ["arch", "linux", "packages"]
         },
         {
             id: "aur",
             name: "AUR",
-            icon: "unicode:",
+            icon: "unicode:",
             url: "https://aur.archlinux.org/packages?K=%s",
             keywords: ["aur", "arch", "packages"]
         },
@@ -170,7 +170,7 @@ Item {
         {
             id: "mdn",
             name: "MDN Web Docs",
-            icon: "material:book_online",
+            icon: "material:code_blocks",
             url: "https://developer.mozilla.org/en-US/search?q=%s",
             keywords: ["mdn", "mozilla", "web", "docs"]
         }
@@ -203,14 +203,6 @@ Item {
                 name: "Type a search query",
                 icon: "unicode:🔍",
                 comment: "Search the web with your default engine (" + getEngineName(defaultEngine) + ")",
-                action: "noop",
-                categories: ["Web Search"]
-            })
-
-            items.push({
-                name: "──────── Available Search Engines ────────",
-                icon: "apps",
-                comment: "Built-in and custom search engines",
                 action: "noop",
                 categories: ["Web Search"]
             })
@@ -266,7 +258,7 @@ Item {
             if (engine.id !== primaryEngineId) {
                 items.push({
                     name: "Search with " + engine.name + ": " + (matchedEngineId ? fallbackQuery : searchQuery),
-                    icon: engine.icon || "unicode:🔍",
+                    icon: engine.icon || "material:search",
                     comment: "Open in browser",
                     action: "search:" + engine.id + ":" + (matchedEngineId ? fallbackQuery : searchQuery),
                     categories: ["Web Search"]

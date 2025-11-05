@@ -249,7 +249,7 @@ PluginSettings {
                     }
 
                     StyledText {
-                        text: "Prefix with 'unicode:' to use emoji or other unicode symbols."
+                        text: "Prefix with 'material:' for Material Symbols or 'unicode:' for emoji/Nerd Font glyphs."
                         font.pixelSize: Theme.fontSizeSmall
                         color: Theme.surfaceVariantText
                         wrapMode: Text.WordWrap

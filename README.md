@@ -98,7 +98,7 @@ Add your own search engines via Settings:
 3. Fill in the form:
    - **ID**: Unique identifier (e.g., `myengine`)
    - **Name**: Display name (e.g., `My Search Engine`)
-   - **Icon**: Material icon name (e.g., `search`) or prefix with `unicode:` to use emoji/symbol icons (e.g., `unicode:🦀`)
+   - **Icon**: Material icon name (e.g., `search`), prefix with `material:` to pull a Material Symbol (e.g., `material:travel_explore`), or prefix with `unicode:` to use emoji/Nerd Font glyphs (e.g., `unicode:`)
    - **URL**: Search URL with `%s` placeholder
    - **Keywords**: Comma-separated keywords for quick access
 
@@ -117,7 +117,7 @@ Keywords: rust,docs,documentation
 ```
 ID: archwiki
 Name: Arch Wiki
-Icon: unicode:📘
+Icon: material:menu_book
 URL: https://wiki.archlinux.org/index.php?search=%s
 Keywords: arch,wiki,documentation
 ```
@@ -126,7 +126,7 @@ Keywords: arch,wiki,documentation
 ```
 ID: gitlab
 Name: GitLab
-Icon: unicode:🦊
+Icon: material:code
 URL: https://gitlab.com/search?search=%s
 Keywords: gitlab,code
 ```

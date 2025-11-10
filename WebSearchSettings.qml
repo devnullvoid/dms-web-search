@@ -8,6 +8,8 @@ PluginSettings {
     id: root
     pluginId: "webSearch"
 
+    property int editingIndex: -1
+
     StyledText {
         width: parent.width
         text: "Web Search Settings"
@@ -169,7 +171,7 @@ PluginSettings {
             spacing: Theme.spacingM
 
             StyledText {
-                text: "Create Custom Search Engine"
+                text: root.editingIndex === -1 ? "Create Custom Search Engine" : "Edit Custom Search Engine"
                 font.pixelSize: Theme.fontSizeMedium
                 font.weight: Font.Medium
                 color: Theme.surfaceText
@@ -317,45 +319,69 @@ PluginSettings {
                 }
             }
 
-            DankButton {
-                id: addButton
-                text: "Create Engine"
-                iconName: "add"
+            Row {
+                spacing: Theme.spacingM
 
-                onClicked: {
-                    const id = idField.text.trim()
-                    const name = nameField.text.trim()
-                    const url = urlField.text.trim()
+                DankButton {
+                    id: addButton
+                    text: root.editingIndex === -1 ? "Create Engine" : "Update Engine"
+                    iconName: root.editingIndex === -1 ? "add" : "save"
 
-                    if (!id || !name || !url) {
-                        if (typeof ToastService !== "undefined") {
-                            ToastService.showError("Please fill in required fields (ID, Name, URL)")
+                    onClicked: {
+                        const id = idField.text.trim()
+                        const name = nameField.text.trim()
+                        const url = urlField.text.trim()
+
+                        if (!id || !name || !url) {
+                            if (typeof ToastService !== "undefined") {
+                                ToastService.showError("Please fill in required fields (ID, Name, URL)")
+                            }
+                            return
                         }
-                        return
+
+                        const keywordsText = keywordsField.text.trim()
+                        const keywords = keywordsText ? keywordsText.split(",").map(k => k.trim()).filter(k => k.length > 0) : []
+
+                        const engine = {
+                            id: id,
+                            name: name,
+                            icon: iconField.text.trim() || "unicode:🔍",
+                            url: url,
+                            keywords: keywords
+                        }
+
+                        const currentEngines = root.loadValue("searchEngines", [])
+                        if (root.editingIndex === -1) {
+                            const updatedEngines = currentEngines.concat([engine])
+                            root.saveValue("searchEngines", updatedEngines)
+                        } else {
+                            currentEngines[root.editingIndex] = engine
+                            root.saveValue("searchEngines", currentEngines)
+                            root.editingIndex = -1
+                        }
+
+                        idField.text = ""
+                        nameField.text = ""
+                        iconField.text = ""
+                        urlField.text = ""
+                        keywordsField.text = ""
+
+                        idField.forceActiveFocus()
                     }
+                }
 
-                    const keywordsText = keywordsField.text.trim()
-                    const keywords = keywordsText ? keywordsText.split(",").map(k => k.trim()).filter(k => k.length > 0) : []
-
-                    const newEngine = {
-                        id: id,
-                        name: name,
-                        icon: iconField.text.trim() || "unicode:🔍",
-                        url: url,
-                        keywords: keywords
+                DankButton {
+                    text: "Cancel"
+                    iconName: "close"
+                    visible: root.editingIndex !== -1
+                    onClicked: {
+                        root.editingIndex = -1
+                        idField.text = ""
+                        nameField.text = ""
+                        iconField.text = ""
+                        urlField.text = ""
+                        keywordsField.text = ""
                     }
-
-                    const currentEngines = root.loadValue("searchEngines", [])
-                    const updatedEngines = currentEngines.concat([newEngine])
-                    root.saveValue("searchEngines", updatedEngines)
-
-                    idField.text = ""
-                    nameField.text = ""
-                    iconField.text = ""
-                    urlField.text = ""
-                    keywordsField.text = ""
-
-                    idField.forceActiveFocus()
                 }
             }
         }
@@ -411,6 +437,7 @@ PluginSettings {
                                 width: Theme.iconSize
                                 height: Theme.iconSize
                                 anchors.verticalCenter: parent.verticalCenter
+                                visible: false // Workaround for DankMaterialShell bug with unicode/material icons
 
                                 DankIcon {
                                     anchors.centerIn: parent
@@ -423,7 +450,7 @@ PluginSettings {
                             Column {
                                 anchors.verticalCenter: parent.verticalCenter
                                 spacing: 2
-                                width: parent.width - Theme.iconSize - deleteButton.width - Theme.spacingM * 3
+                                width: parent.width - editButton.width - deleteButton.width - Theme.spacingM * 3
 
                                 StyledText {
                                     text: model.name || "Unnamed"
@@ -445,8 +472,12 @@ PluginSettings {
                                 StyledText {
                                     text: {
                                         const kw = model.keywords
-                                        if (Array.isArray(kw) && kw.length > 0) {
-                                            return "Keywords: " + kw.join(", ")
+                                        if (kw && kw.length > 0) {
+                                            let result = []
+                                            for (let i = 0; i < kw.length; i++) {
+                                                result.push(kw[i])
+                                            }
+                                            return "Keywords: " + result.join(", ")
                                         }
                                         return "No keywords"
                                     }
@@ -454,6 +485,39 @@ PluginSettings {
                                     color: Theme.surfaceVariantText
                                     width: parent.width
                                     elide: Text.ElideRight
+                                }
+                            }
+
+                            Rectangle {
+                                id: editButton
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: 32
+                                height: 32
+                                radius: 16
+                                color: editArea.containsMouse ? Theme.primary : "transparent"
+
+                                DankIcon {
+                                    anchors.centerIn: parent
+                                    name: "edit"
+                                    size: 16
+                                    color: editArea.containsMouse ? Theme.onPrimary : Theme.surfaceVariantText
+                                }
+
+                                MouseArea {
+                                    id: editArea
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: {
+                                        root.editingIndex = index
+                                        const engine = root.loadValue("searchEngines", [])[index]
+                                        idField.text = engine.id
+                                        nameField.text = engine.name
+                                        iconField.text = engine.icon
+                                        urlField.text = engine.url
+                                        keywordsField.text = Array.isArray(engine.keywords) ? engine.keywords.join(", ") : ""
+                                        root.ensureItemVisible(idField)
+                                    }
                                 }
                             }
 

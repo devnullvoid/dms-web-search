@@ -19,7 +19,7 @@ A DankMaterialShell launcher plugin for searching the web with 23+ built-in sear
 ### From Plugin Registry (Recommended)
 
 ```bash
-# Coming soon - will be available via DMS plugin manager
+dms plugins install webSearch
 ```
 
 ### Manual Installation

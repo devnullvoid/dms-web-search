@@ -6,7 +6,7 @@ Item {
     id: root
 
     property var pluginService: null
-    property string trigger: "?"
+    property string trigger: "@"
     property var searchEngines: []
     property string defaultEngine: "google"
 
@@ -188,7 +188,7 @@ Item {
 
     function loadSettings() {
         if (pluginService) {
-            trigger = pluginService.loadPluginData("webSearch", "trigger", "?")
+            trigger = pluginService.loadPluginData("webSearch", "trigger", "@")
             defaultEngine = pluginService.loadPluginData("webSearch", "defaultEngine", "google")
             searchEngines = pluginService.loadPluginData("webSearch", "searchEngines", [])
         }

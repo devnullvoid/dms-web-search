@@ -12,7 +12,7 @@ A DankMaterialShell launcher plugin for searching the web with 23+ built-in sear
 - **Configurable Default Engine** - Set your preferred search engine
 - **One-Click Search** - Select and press Enter to open browser
 - **Toast Notifications** - Visual feedback for every search
-- **Configurable Trigger** - Default `?` or set your own trigger
+- **Configurable Trigger** - Default `@` or set your own trigger
 
 ## Installation
 
@@ -39,21 +39,23 @@ cp -r WebSearch ~/.config/DankMaterialShell/plugins/
 
 ### Basic Search
 
+Note: Avoid triggers reserved by DMS or other plugins (e.g., `/` is used for file search).
+
 1. Open launcher (Ctrl+Space)
-2. Type `?` followed by search query
+2. Type `@` followed by search query
 3. Examples:
-   - `? rust tutorials` - Search with default engine
-   - `? linux kernel` - General search
+   - `@ rust tutorials` - Search with default engine
+   - `@ linux kernel` - General search
 4. Select engine and press Enter to open browser
 
 ### Engine-Specific Search
 
 Use keywords to search specific engines directly:
 
-- `? github awesome-linux` - Search GitHub
-- `? youtube music video` - Search YouTube
-- `? wiki quantum physics` - Search Wikipedia
-- `? stackoverflow async rust` - Search Stack Overflow
+- `@ github awesome-linux` - Search GitHub
+- `@ youtube music video` - Search YouTube
+- `@ wiki quantum physics` - Search Wikipedia
+- `@ stackoverflow async rust` - Search Stack Overflow
 
 ## Built-in Search Engines
 
@@ -150,7 +152,8 @@ Keywords: gitlab,code
 
 Access settings via DMS Settings → Plugins → Web Search:
 
-- **Trigger**: Set custom trigger (`?`, `/`, `/search`, etc.) or disable for always-on mode
+- **Trigger**: Set custom trigger (`@`, `!`, `ws`, etc.) or disable for always-on mode
+  - Avoid triggers reserved by DMS or other plugins (e.g., `/` is used for file search).
 - **Default Search Engine**: Choose your preferred engine (Google, DuckDuckGo, Brave, Bing)
 - **Custom Search Engines**: Add/manage your own search engines
 
@@ -159,33 +162,33 @@ Access settings via DMS Settings → Plugins → Web Search:
 ### General Queries
 
 ```
-? rust programming         # Search with default engine
-? how to install arch      # General search
+@ rust programming         # Search with default engine
+@ how to install arch      # General search
 ```
 
 ### Development
 
 ```
-? github awesome-linux     # Search GitHub
-? stackoverflow async rust # Search Stack Overflow
-? npm react hooks          # Search npm packages
-? pypi requests            # Search Python packages
+@ github awesome-linux     # Search GitHub
+@ stackoverflow async rust # Search Stack Overflow
+@ npm react hooks          # Search npm packages
+@ pypi requests            # Search Python packages
 ```
 
 ### Linux
 
 ```
-? arch firefox             # Search Arch packages
-? aur brave-bin            # Search AUR
-? wiki systemd             # Search Wikipedia
+@ arch firefox             # Search Arch packages
+@ aur brave-bin            # Search AUR
+@ wiki systemd             # Search Wikipedia
 ```
 
 ### Media
 
 ```
-? youtube rust tutorial    # Search YouTube
-? reddit linux gaming      # Search Reddit
-? imdb inception           # Search IMDb
+@ youtube rust tutorial    # Search YouTube
+@ reddit linux gaming      # Search Reddit
+@ imdb inception           # Search IMDb
 ```
 
 ## Requirements
@@ -203,14 +206,14 @@ Access settings via DMS Settings → Plugins → Web Search:
 ## Technical Details
 
 - **Type**: Launcher plugin
-- **Trigger**: `?` (configurable)
+- **Trigger**: `@` (configurable)
 - **Language**: QML (Qt Modeling Language)
 - **Browser Launch**: Uses `xdg-open` for system default browser
 
 ## Tips & Tricks
 
 1. **Keyword Shortcuts**: Type engine keywords first for direct search
-   - `github rust` instead of `? github rust`
+   - `github rust` instead of `@ github rust`
 
 2. **Combine Keywords**: Use multiple keywords to narrow results
    - `stackoverflow rust async await`

@@ -2,7 +2,7 @@
   "id": "webSearch",
   "name": "Web Search",
   "description": "Search the web with custom search engines",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": "devnullvoid",
   "icon": "search",
   "type": "launcher",
@@ -12,7 +12,7 @@
   ],
   "component": "./WebSearch.qml",
   "settings": "./WebSearchSettings.qml",
-  "trigger": "?",
+  "trigger": "@",
   "permissions": [
     "settings_read",
     "settings_write"

@@ -90,7 +90,7 @@ PluginSettings {
                     if (checked) {
                         root.saveValue("trigger", "")
                     } else {
-                        root.saveValue("trigger", triggerField.text || "?")
+                        root.saveValue("trigger", triggerField.text || "@")
                     }
                 }
             }
@@ -112,20 +112,27 @@ PluginSettings {
                 id: triggerField
                 width: 100
                 height: 40
-                text: root.loadValue("trigger", "?")
-                placeholderText: "?"
+                text: root.loadValue("trigger", "@")
+                placeholderText: "@"
                 backgroundColor: Theme.surfaceContainer
                 textColor: Theme.surfaceText
 
                 onTextEdited: {
                     const newTrigger = text.trim()
-                    root.saveValue("trigger", newTrigger || "?")
+                    root.saveValue("trigger", newTrigger || "@")
                     root.saveValue("noTrigger", newTrigger === "")
                 }
             }
 
             StyledText {
-                text: "Examples: ?, /, /search, etc."
+                text: "Examples: @, !, ws, etc."
+                font.pixelSize: Theme.fontSizeSmall
+                color: Theme.surfaceVariantText
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            StyledText {
+                text: "Avoid triggers reserved by DMS or other plugins (e.g., '/' for file search)."
                 font.pixelSize: Theme.fontSizeSmall
                 color: Theme.surfaceVariantText
                 anchors.verticalCenter: parent.verticalCenter
@@ -311,7 +318,7 @@ PluginSettings {
                 }
 
                 StyledText {
-                    text: "Use these keywords to trigger this engine (e.g., '? keyword query')"
+                    text: "Use these keywords to trigger this engine (e.g., '@ keyword query')"
                     font.pixelSize: Theme.fontSizeSmall
                     color: Theme.surfaceVariantText
                     wrapMode: Text.WordWrap
@@ -652,13 +659,13 @@ PluginSettings {
             }
 
             StyledText {
-                text: noTriggerToggle.checked ? "2. Type your search query directly" : "2. Type your trigger (default: ?) followed by search query"
+                text: noTriggerToggle.checked ? "2. Type your search query directly" : "2. Type your trigger (default: @) followed by search query"
                 font.pixelSize: Theme.fontSizeSmall
                 color: Theme.surfaceVariantText
             }
 
             StyledText {
-                text: noTriggerToggle.checked ? "3. Example: 'linux kernel' or 'github rust'" : "3. Example: '? linux kernel' or '? github rust'"
+                text: noTriggerToggle.checked ? "3. Example: 'linux kernel' or 'github rust'" : "3. Example: '@ linux kernel' or '@ github rust'"
                 font.pixelSize: Theme.fontSizeSmall
                 color: Theme.surfaceVariantText
             }

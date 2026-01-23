@@ -6,7 +6,7 @@ QtObject {
     id: root
 
     property var pluginService: null
-    property string trigger: "?"
+    property string trigger: "@"
     property var searchEngines: []
     property string defaultEngine: "google"
 
@@ -186,7 +186,7 @@ QtObject {
     function loadSettings() {
         if (!pluginService)
             return;
-        trigger = pluginService.loadPluginData("webSearch", "trigger", "?");
+        trigger = pluginService.loadPluginData("webSearch", "trigger", "@");
         defaultEngine = pluginService.loadPluginData("webSearch", "defaultEngine", "google");
         searchEngines = pluginService.loadPluginData("webSearch", "searchEngines", []);
     }

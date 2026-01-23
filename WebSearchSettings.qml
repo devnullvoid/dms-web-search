@@ -41,7 +41,7 @@ PluginSettings {
             if (value) {
                 root.saveValue("trigger", "");
             } else {
-                root.saveValue("trigger", triggerSetting.value || "?");
+                root.saveValue("trigger", triggerSetting.value || "@");
             }
         }
     }
@@ -51,9 +51,9 @@ PluginSettings {
         visible: !noTriggerToggle.value
         settingKey: "trigger"
         label: "Trigger"
-        description: "Examples: ?, /, /search, etc."
-        placeholder: "?"
-        defaultValue: "?"
+        description: "Examples: @, !, ws, etc. Avoid triggers reserved by DMS or other plugins (e.g., / for file search)."
+        placeholder: "@"
+        defaultValue: "@"
     }
 
     StyledRect {
@@ -251,7 +251,7 @@ PluginSettings {
                 }
 
                 StyledText {
-                    text: "Use these keywords to trigger this engine (e.g., '? keyword query')"
+                    text: "Use these keywords to trigger this engine (e.g., '@ keyword query')"
                     font.pixelSize: Theme.fontSizeSmall
                     color: Theme.surfaceVariantText
                     wrapMode: Text.WordWrap
@@ -592,13 +592,13 @@ PluginSettings {
             }
 
             StyledText {
-                text: noTriggerToggle.value ? "2. Type your search query directly" : "2. Type your trigger (default: ?) followed by search query"
+                text: noTriggerToggle.value ? "2. Type your search query directly" : "2. Type your trigger (default: @) followed by search query"
                 font.pixelSize: Theme.fontSizeSmall
                 color: Theme.surfaceVariantText
             }
 
             StyledText {
-                text: noTriggerToggle.value ? "3. Example: 'linux kernel' or 'github rust'" : "3. Example: '? linux kernel' or '? github rust'"
+                text: noTriggerToggle.value ? "3. Example: 'linux kernel' or 'github rust'" : "3. Example: '@ linux kernel' or '@ github rust'"
                 font.pixelSize: Theme.fontSizeSmall
                 color: Theme.surfaceVariantText
             }

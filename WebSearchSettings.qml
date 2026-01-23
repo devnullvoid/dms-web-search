@@ -1,5 +1,4 @@
 import QtQuick
-import QtQuick.Controls
 import qs.Common
 import qs.Widgets
 import qs.Modules.Plugins
@@ -32,105 +31,29 @@ PluginSettings {
         color: Theme.outlineVariant
     }
 
-    Column {
-        spacing: 12
-        width: parent.width
-
-        StyledText {
-            text: "Trigger Configuration"
-            font.pixelSize: Theme.fontSizeLarge
-            font.weight: Font.Medium
-            color: Theme.surfaceText
-        }
-
-        StyledText {
-            text: noTriggerToggle.checked ? "Items will always show in the launcher (no trigger needed)." : "Set the trigger text to activate web search. Type the trigger in the launcher followed by your search query."
-            font.pixelSize: Theme.fontSizeSmall
-            color: Theme.surfaceVariantText
-            wrapMode: Text.WordWrap
-            width: parent.width
-        }
-
-        Row {
-            spacing: 12
-
-            CheckBox {
-                id: noTriggerToggle
-                text: "No trigger (always show)"
-                checked: root.loadValue("noTrigger", false)
-
-                contentItem: StyledText {
-                    text: noTriggerToggle.text
-                    font.pixelSize: Theme.fontSizeMedium
-                    color: Theme.surfaceText
-                    leftPadding: noTriggerToggle.indicator.width + 8
-                    verticalAlignment: Text.AlignVCenter
-                }
-
-                indicator: StyledRect {
-                    implicitWidth: 20
-                    implicitHeight: 20
-                    radius: Theme.cornerRadiusSmall
-                    border.color: noTriggerToggle.checked ? Theme.primary : Theme.outline
-                    border.width: 2
-                    color: noTriggerToggle.checked ? Theme.primary : "transparent"
-
-                    StyledRect {
-                        width: 12
-                        height: 12
-                        anchors.centerIn: parent
-                        radius: 2
-                        color: Theme.onPrimary
-                        visible: noTriggerToggle.checked
-                    }
-                }
-
-                onCheckedChanged: {
-                    root.saveValue("noTrigger", checked)
-                    if (checked) {
-                        root.saveValue("trigger", "")
-                    } else {
-                        root.saveValue("trigger", triggerField.text || "?")
-                    }
-                }
+    ToggleSetting {
+        id: noTriggerToggle
+        settingKey: "noTrigger"
+        label: "Always Active"
+        description: value ? "Items will always show in the launcher (no trigger needed)." : "Set the trigger text to activate web search. Type the trigger in the launcher followed by your search query."
+        defaultValue: false
+        onValueChanged: {
+            if (value) {
+                root.saveValue("trigger", "");
+            } else {
+                root.saveValue("trigger", triggerSetting.value || "@");
             }
         }
+    }
 
-        Row {
-            spacing: 12
-            width: parent.width
-            visible: !noTriggerToggle.checked
-
-            StyledText {
-                text: "Trigger:"
-                font.pixelSize: Theme.fontSizeMedium
-                color: Theme.surfaceText
-                anchors.verticalCenter: parent.verticalCenter
-            }
-
-            DankTextField {
-                id: triggerField
-                width: 100
-                height: 40
-                text: root.loadValue("trigger", "?")
-                placeholderText: "?"
-                backgroundColor: Theme.surfaceContainer
-                textColor: Theme.surfaceText
-
-                onTextEdited: {
-                    const newTrigger = text.trim()
-                    root.saveValue("trigger", newTrigger || "?")
-                    root.saveValue("noTrigger", newTrigger === "")
-                }
-            }
-
-            StyledText {
-                text: "Examples: ?, /, /search, etc."
-                font.pixelSize: Theme.fontSizeSmall
-                color: Theme.surfaceVariantText
-                anchors.verticalCenter: parent.verticalCenter
-            }
-        }
+    StringSetting {
+        id: triggerSetting
+        visible: !noTriggerToggle.value
+        settingKey: "trigger"
+        label: "Trigger"
+        description: "Examples: @, !, ws, etc. Avoid triggers reserved by DMS or other plugins (e.g., / for file search)."
+        placeholder: "@"
+        defaultValue: "@"
     }
 
     StyledRect {
@@ -144,11 +67,26 @@ PluginSettings {
         label: "Default Search Engine"
         description: "The search engine used when no keyword is specified"
         options: [
-            {label: "Google", value: "google"},
-            {label: "DuckDuckGo", value: "duckduckgo"},
-            {label: "Brave Search", value: "brave"},
-            {label: "Bing", value: "bing"}
-            {label: "Kagi", value: "kagi"}
+            {
+                label: "Google",
+                value: "google"
+            },
+            {
+                label: "DuckDuckGo",
+                value: "duckduckgo"
+            },
+            {
+                label: "Brave Search",
+                value: "brave"
+            },
+            {
+                label: "Bing",
+                value: "bing"
+            },
+            {
+                label: "Kagi",
+                value: "kagi"
+            }
         ]
         defaultValue: "google"
     }
@@ -198,7 +136,8 @@ PluginSettings {
                         placeholderText: "e.g., myengine"
                         keyNavigationTab: nameField
                         onFocusStateChanged: hasFocus => {
-                            if (hasFocus) root.ensureItemVisible(idField)
+                            if (hasFocus)
+                                root.ensureItemVisible(idField);
                         }
                     }
                 }
@@ -220,7 +159,8 @@ PluginSettings {
                         keyNavigationBacktab: idField
                         keyNavigationTab: iconField
                         onFocusStateChanged: hasFocus => {
-                            if (hasFocus) root.ensureItemVisible(nameField)
+                            if (hasFocus)
+                                root.ensureItemVisible(nameField);
                         }
                     }
                 }
@@ -247,7 +187,8 @@ PluginSettings {
                         keyNavigationBacktab: nameField
                         keyNavigationTab: urlField
                         onFocusStateChanged: hasFocus => {
-                            if (hasFocus) root.ensureItemVisible(iconField)
+                            if (hasFocus)
+                                root.ensureItemVisible(iconField);
                         }
                     }
 
@@ -277,7 +218,8 @@ PluginSettings {
                         keyNavigationBacktab: iconField
                         keyNavigationTab: keywordsField
                         onFocusStateChanged: hasFocus => {
-                            if (hasFocus) root.ensureItemVisible(urlField)
+                            if (hasFocus)
+                                root.ensureItemVisible(urlField);
                         }
                     }
 
@@ -307,12 +249,13 @@ PluginSettings {
                     placeholderText: "e.g., my,engine,search"
                     keyNavigationBacktab: urlField
                     onFocusStateChanged: hasFocus => {
-                        if (hasFocus) root.ensureItemVisible(keywordsField)
+                        if (hasFocus)
+                            root.ensureItemVisible(keywordsField);
                     }
                 }
 
                 StyledText {
-                    text: "Use these keywords to trigger this engine (e.g., '? keyword query')"
+                    text: "Use these keywords to trigger this engine (e.g., '@ keyword query')"
                     font.pixelSize: Theme.fontSizeSmall
                     color: Theme.surfaceVariantText
                     wrapMode: Text.WordWrap
@@ -329,19 +272,19 @@ PluginSettings {
                     iconName: root.editingIndex === -1 ? "add" : "save"
 
                     onClicked: {
-                        const id = idField.text.trim()
-                        const name = nameField.text.trim()
-                        const url = urlField.text.trim()
+                        const id = idField.text.trim();
+                        const name = nameField.text.trim();
+                        const url = urlField.text.trim();
 
                         if (!id || !name || !url) {
                             if (typeof ToastService !== "undefined") {
-                                ToastService.showError("Please fill in required fields (ID, Name, URL)")
+                                ToastService.showError("Please fill in required fields (ID, Name, URL)");
                             }
-                            return
+                            return;
                         }
 
-                        const keywordsText = keywordsField.text.trim()
-                        const keywords = keywordsText ? keywordsText.split(",").map(k => k.trim()).filter(k => k.length > 0) : []
+                        const keywordsText = keywordsField.text.trim();
+                        const keywords = keywordsText ? keywordsText.split(",").map(k => k.trim()).filter(k => k.length > 0) : [];
 
                         const engine = {
                             id: id,
@@ -349,25 +292,25 @@ PluginSettings {
                             icon: iconField.text.trim() || "unicode:🔍",
                             url: url,
                             keywords: keywords
-                        }
+                        };
 
-                        const currentEngines = root.loadValue("searchEngines", [])
+                        const currentEngines = root.loadValue("searchEngines", []);
                         if (root.editingIndex === -1) {
-                            const updatedEngines = currentEngines.concat([engine])
-                            root.saveValue("searchEngines", updatedEngines)
+                            const updatedEngines = currentEngines.concat([engine]);
+                            root.saveValue("searchEngines", updatedEngines);
                         } else {
-                            currentEngines[root.editingIndex] = engine
-                            root.saveValue("searchEngines", currentEngines)
-                            root.editingIndex = -1
+                            currentEngines[root.editingIndex] = engine;
+                            root.saveValue("searchEngines", currentEngines);
+                            root.editingIndex = -1;
                         }
 
-                        idField.text = ""
-                        nameField.text = ""
-                        iconField.text = ""
-                        urlField.text = ""
-                        keywordsField.text = ""
+                        idField.text = "";
+                        nameField.text = "";
+                        iconField.text = "";
+                        urlField.text = "";
+                        keywordsField.text = "";
 
-                        idField.forceActiveFocus()
+                        idField.forceActiveFocus();
                     }
                 }
 
@@ -376,12 +319,12 @@ PluginSettings {
                     iconName: "close"
                     visible: root.editingIndex !== -1
                     onClicked: {
-                        root.editingIndex = -1
-                        idField.text = ""
-                        nameField.text = ""
-                        iconField.text = ""
-                        urlField.text = ""
-                        keywordsField.text = ""
+                        root.editingIndex = -1;
+                        idField.text = "";
+                        nameField.text = "";
+                        iconField.text = "";
+                        urlField.text = "";
+                        keywordsField.text = "";
                     }
                 }
             }
@@ -472,15 +415,15 @@ PluginSettings {
 
                                 StyledText {
                                     text: {
-                                        const kw = model.keywords
+                                        const kw = model.keywords;
                                         if (kw && kw.length > 0) {
-                                            let result = []
+                                            let result = [];
                                             for (let i = 0; i < kw.length; i++) {
-                                                result.push(kw[i])
+                                                result.push(kw[i]);
                                             }
-                                            return "Keywords: " + result.join(", ")
+                                            return "Keywords: " + result.join(", ");
                                         }
-                                        return "No keywords"
+                                        return "No keywords";
                                     }
                                     font.pixelSize: Theme.fontSizeSmall
                                     color: Theme.surfaceVariantText
@@ -510,14 +453,14 @@ PluginSettings {
                                     hoverEnabled: true
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: {
-                                        root.editingIndex = index
-                                        const engine = root.loadValue("searchEngines", [])[index]
-                                        idField.text = engine.id
-                                        nameField.text = engine.name
-                                        iconField.text = engine.icon
-                                        urlField.text = engine.url
-                                        keywordsField.text = Array.isArray(engine.keywords) ? engine.keywords.join(", ") : ""
-                                        root.ensureItemVisible(idField)
+                                        root.editingIndex = index;
+                                        const engine = root.loadValue("searchEngines", [])[index];
+                                        idField.text = engine.id;
+                                        nameField.text = engine.name;
+                                        iconField.text = engine.icon;
+                                        urlField.text = engine.url;
+                                        keywordsField.text = Array.isArray(engine.keywords) ? engine.keywords.join(", ") : "";
+                                        root.ensureItemVisible(idField);
                                     }
                                 }
                             }
@@ -543,9 +486,9 @@ PluginSettings {
                                     hoverEnabled: true
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: {
-                                        const currentEngines = root.loadValue("searchEngines", [])
-                                        const updatedEngines = currentEngines.filter((_, i) => i !== index)
-                                        root.saveValue("searchEngines", updatedEngines)
+                                        const currentEngines = root.loadValue("searchEngines", []);
+                                        const updatedEngines = currentEngines.filter((_, i) => i !== index);
+                                        root.saveValue("searchEngines", updatedEngines);
                                     }
                                 }
                             }
@@ -653,13 +596,13 @@ PluginSettings {
             }
 
             StyledText {
-                text: noTriggerToggle.checked ? "2. Type your search query directly" : "2. Type your trigger (default: ?) followed by search query"
+                text: noTriggerToggle.value ? "2. Type your search query directly" : "2. Type your trigger (default: @) followed by search query"
                 font.pixelSize: Theme.fontSizeSmall
                 color: Theme.surfaceVariantText
             }
 
             StyledText {
-                text: noTriggerToggle.checked ? "3. Example: 'linux kernel' or 'github rust'" : "3. Example: '? linux kernel' or '? github rust'"
+                text: noTriggerToggle.value ? "3. Example: 'linux kernel' or 'github rust'" : "3. Example: '@ linux kernel' or '@ github rust'"
                 font.pixelSize: Theme.fontSizeSmall
                 color: Theme.surfaceVariantText
             }

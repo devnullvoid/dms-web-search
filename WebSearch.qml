@@ -42,6 +42,13 @@ QtObject {
             keywords: ["bing", "microsoft"]
         },
         {
+            id: "kagi",
+            name: "Kagi",
+            icon: "material:star_shine",
+            url: "https://kagi.com/search?q=%s",
+            keywords: ["kagi", "privacy"]
+        },
+        {
             id: "youtube",
             name: "YouTube",
             icon: "material:youtube_activity",

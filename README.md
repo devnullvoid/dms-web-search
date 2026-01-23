@@ -65,6 +65,7 @@ Use keywords to search specific engines directly:
 - **DuckDuckGo** - Keywords: `ddg`, `duckduckgo`, `privacy`
 - **Brave Search** - Keywords: `brave`, `privacy`
 - **Bing** - Keywords: `bing`, `microsoft`
+- **Kagi** - Keywords: `kagi`, `privacy`
 
 ### Development
 

@@ -82,6 +82,10 @@ PluginSettings {
             {
                 label: "Bing",
                 value: "bing"
+            },
+            {
+                label: "Kagi",
+                value: "kagi"
             }
         ]
         defaultValue: "google"
@@ -532,7 +536,7 @@ PluginSettings {
             leftPadding: 16
 
             StyledText {
-                text: "• Google, DuckDuckGo, Brave Search, Bing"
+                text: "• Google, DuckDuckGo, Brave Search, Bing, Kagi"
                 font.pixelSize: Theme.fontSizeSmall
                 color: Theme.surfaceVariantText
             }

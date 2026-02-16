@@ -133,14 +133,14 @@ QtObject {
             name: "Arch Linux Wiki",
             icon: "material:terminal",
             url: "https://wiki.archlinux.org/index.php?search=%s",
-            keywords: ["arch", "linux", "packages"]
+            keywords: ["arch", "archwiki"]
         },
         {
             id: "aur",
             name: "AUR",
             icon: "unicode:",
             url: "https://aur.archlinux.org/packages?K=%s",
-            keywords: ["aur", "arch", "packages"]
+            keywords: ["aur"]
         },
         {
             id: "nixpkgs",

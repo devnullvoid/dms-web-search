@@ -88,30 +88,37 @@ QtObject {
         const primaryEngineId = matchedEngineId || defaultEngine;
         const primaryEngineObj = allEngines.find(e => e.id === primaryEngineId);
 
+        // Use _preScored to ensure DMS preserves our item ordering
+        // Higher _preScored = appears first in results (DMS Scorer.js respects this)
+        // This requires DMS fix: ItemTransformers.js must preserve _preScored
+        const PRIMARY_SCORE = 10000;
+        const SECONDARY_SCORE = 1000;
+
         if (primaryEngineObj) {
-            // Primary engine first with priority prefix to ensure it's selected by default
             items.push({
-                name: "🔍 " + primaryEngineObj.name + ": " + searchQuery,
+                name: "Search with " + primaryEngineObj.name + ": " + searchQuery,
                 icon: primaryEngineObj.icon || "unicode:🔍",
                 comment: "Press Enter to search",
                 action: "search:" + primaryEngineId + ":" + searchQuery,
                 categories: ["Web Search"],
-                priority: 100
+                _preScored: PRIMARY_SCORE
             });
         }
 
+        let secondaryIndex = 0;
         for (let i = 0; i < allEngines.length; i++) {
             const engine = allEngines[i];
             if (engine.id === primaryEngineId)
                 continue;
             items.push({
-                name: engine.name + ": " + (matchedEngineId ? fallbackQuery : searchQuery),
+                name: "Search with " + engine.name + ": " + (matchedEngineId ? fallbackQuery : searchQuery),
                 icon: engine.icon || "material:search",
                 comment: "Open in browser",
                 action: "search:" + engine.id + ":" + (matchedEngineId ? fallbackQuery : searchQuery),
                 categories: ["Web Search"],
-                priority: 0
+                _preScored: SECONDARY_SCORE - secondaryIndex
             });
+            secondaryIndex++;
         }
 
         return items;

@@ -89,12 +89,14 @@ QtObject {
         const primaryEngineObj = allEngines.find(e => e.id === primaryEngineId);
 
         if (primaryEngineObj) {
+            // Primary engine first with priority prefix to ensure it's selected by default
             items.push({
-                name: "Search with " + primaryEngineObj.name + ": " + searchQuery,
+                name: "🔍 " + primaryEngineObj.name + ": " + searchQuery,
                 icon: primaryEngineObj.icon || "unicode:🔍",
-                comment: "Open in browser",
+                comment: "Press Enter to search",
                 action: "search:" + primaryEngineId + ":" + searchQuery,
-                categories: ["Web Search"]
+                categories: ["Web Search"],
+                priority: 100
             });
         }
 
@@ -103,11 +105,12 @@ QtObject {
             if (engine.id === primaryEngineId)
                 continue;
             items.push({
-                name: "Search with " + engine.name + ": " + (matchedEngineId ? fallbackQuery : searchQuery),
+                name: engine.name + ": " + (matchedEngineId ? fallbackQuery : searchQuery),
                 icon: engine.icon || "material:search",
                 comment: "Open in browser",
                 action: "search:" + engine.id + ":" + (matchedEngineId ? fallbackQuery : searchQuery),
-                categories: ["Web Search"]
+                categories: ["Web Search"],
+                priority: 0
             });
         }
 

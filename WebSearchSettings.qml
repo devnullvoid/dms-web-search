@@ -8,6 +8,38 @@ PluginSettings {
     pluginId: "webSearch"
 
     property int editingIndex: -1
+    property int engineListVersion: 0
+
+    property var builtInEnginesList: {
+        const enginesComponent = Qt.createComponent("SearchEngines.qml");
+        if (enginesComponent.status === Component.Ready) {
+            const enginesObj = enginesComponent.createObject(root);
+            return enginesObj.engines;
+        }
+        return [];
+    }
+
+    function getDefaultEngineOptions() {
+        // Access engineListVersion to make this reactive
+        const version = root.engineListVersion;
+
+        const builtInOptions = root.builtInEnginesList.map(engine => ({
+            label: engine.name,
+            value: engine.id
+        }));
+
+        const customEngines = root.loadValue("searchEngines", []);
+        const customOptions = customEngines.map(engine => ({
+            label: engine.name + " (Custom)",
+            value: engine.id
+        }));
+
+        return builtInOptions.concat(customOptions);
+    }
+
+    function refreshEngineList() {
+        root.engineListVersion++;
+    }
 
     StyledText {
         width: parent.width
@@ -63,31 +95,11 @@ PluginSettings {
     }
 
     SelectionSetting {
+        id: defaultEngineSetting
         settingKey: "defaultEngine"
         label: "Default Search Engine"
-        description: "The search engine used when no keyword is specified"
-        options: [
-            {
-                label: "Google",
-                value: "google"
-            },
-            {
-                label: "DuckDuckGo",
-                value: "duckduckgo"
-            },
-            {
-                label: "Brave Search",
-                value: "brave"
-            },
-            {
-                label: "Bing",
-                value: "bing"
-            },
-            {
-                label: "Kagi",
-                value: "kagi"
-            }
-        ]
+        description: "The search engine used when no keyword is specified. Includes all built-in and custom engines."
+        options: root.getDefaultEngineOptions()
         defaultValue: "google"
     }
 
@@ -304,6 +316,8 @@ PluginSettings {
                             root.editingIndex = -1;
                         }
 
+                        root.refreshEngineList();
+
                         idField.text = "";
                         nameField.text = "";
                         iconField.text = "";
@@ -489,6 +503,7 @@ PluginSettings {
                                         const currentEngines = root.loadValue("searchEngines", []);
                                         const updatedEngines = currentEngines.filter((_, i) => i !== index);
                                         root.saveValue("searchEngines", updatedEngines);
+                                        root.refreshEngineList();
                                     }
                                 }
                             }
@@ -520,49 +535,136 @@ PluginSettings {
         color: Theme.outlineVariant
     }
 
-    Column {
-        spacing: 8
+    StyledRect {
         width: parent.width
-
-        StyledText {
-            text: "Built-in Search Engines:"
-            font.pixelSize: Theme.fontSizeMedium
-            font.weight: Font.Medium
-            color: Theme.surfaceText
-        }
+        height: builtInEnginesColumn.implicitHeight + Theme.spacingL * 2
+        radius: Theme.cornerRadius
+        color: Theme.surfaceContainerHigh
 
         Column {
-            spacing: 4
-            leftPadding: 16
+            id: builtInEnginesColumn
+            anchors.fill: parent
+            anchors.margins: Theme.spacingL
+            spacing: Theme.spacingM
 
             StyledText {
-                text: "• Google, DuckDuckGo, Brave Search, Bing, Kagi"
-                font.pixelSize: Theme.fontSizeSmall
-                color: Theme.surfaceVariantText
+                text: "Built-in Search Engines"
+                font.pixelSize: Theme.fontSizeMedium
+                font.weight: Font.Medium
+                color: Theme.surfaceText
             }
 
             StyledText {
-                text: "• YouTube, GitHub, Stack Overflow, Reddit, Wikipedia"
+                text: "Enable or disable search engines. Disabled engines will not appear in search results."
                 font.pixelSize: Theme.fontSizeSmall
                 color: Theme.surfaceVariantText
+                wrapMode: Text.WordWrap
+                width: parent.width
             }
 
-            StyledText {
-                text: "• Amazon, eBay, Google Maps, Google Images"
-                font.pixelSize: Theme.fontSizeSmall
-                color: Theme.surfaceVariantText
-            }
+            ListView {
+                width: parent.width
+                height: Math.max(200, contentHeight)
+                clip: true
+                spacing: Theme.spacingXS
 
-            StyledText {
-                text: "• Twitter/X, LinkedIn, IMDb, Google Translate"
-                font.pixelSize: Theme.fontSizeSmall
-                color: Theme.surfaceVariantText
-            }
+                model: root.builtInEnginesList
 
-            StyledText {
-                text: "• Arch Linux, AUR, npm, PyPI, crates.io, MDN"
-                font.pixelSize: Theme.fontSizeSmall
-                color: Theme.surfaceVariantText
+                delegate: StyledRect {
+                    required property var modelData
+                    required property int index
+
+                    width: ListView.view.width
+                    height: engineToggleRow.implicitHeight + Theme.spacingS * 2
+                    radius: Theme.cornerRadius
+                    color: engineToggleMouseArea.containsMouse ? Theme.surfaceContainerHighest : Theme.surfaceContainer
+
+                    Row {
+                        id: engineToggleRow
+                        anchors.fill: parent
+                        anchors.margins: Theme.spacingS
+                        spacing: Theme.spacingM
+
+                        Column {
+                            anchors.verticalCenter: parent.verticalCenter
+                            spacing: 2
+                            width: parent.width - toggleSwitch.width - Theme.spacingM
+
+                            StyledText {
+                                text: modelData.name
+                                font.pixelSize: Theme.fontSizeMedium
+                                color: Theme.surfaceText
+                                width: parent.width
+                                elide: Text.ElideRight
+                            }
+
+                            StyledText {
+                                text: "Keywords: " + (Array.isArray(modelData.keywords) ? modelData.keywords.join(", ") : modelData.keywords)
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                                width: parent.width
+                                elide: Text.ElideRight
+                            }
+                        }
+
+                        Rectangle {
+                            id: toggleSwitch
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: 48
+                            height: 24
+                            radius: 12
+                            color: {
+                                const disabled = root.loadValue("disabledEngines", []);
+                                const isEnabled = !disabled.includes(modelData.id);
+                                return isEnabled ? Theme.primary : Theme.surfaceVariant;
+                            }
+
+                            Rectangle {
+                                width: 20
+                                height: 20
+                                radius: 10
+                                color: Theme.surface
+                                x: {
+                                    const disabled = root.loadValue("disabledEngines", []);
+                                    const isEnabled = !disabled.includes(modelData.id);
+                                    return isEnabled ? parent.width - width - 2 : 2;
+                                }
+                                y: 2
+
+                                Behavior on x {
+                                    NumberAnimation { duration: 150 }
+                                }
+                            }
+
+                            MouseArea {
+                                id: toggleArea
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    const disabled = root.loadValue("disabledEngines", []);
+                                    const isEnabled = !disabled.includes(modelData.id);
+
+                                    if (isEnabled) {
+                                        // Disable the engine
+                                        root.saveValue("disabledEngines", disabled.concat([modelData.id]));
+                                    } else {
+                                        // Enable the engine
+                                        const updated = disabled.filter(id => id !== modelData.id);
+                                        root.saveValue("disabledEngines", updated);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    MouseArea {
+                        id: engineToggleMouseArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        propagateComposedEvents: true
+                    }
+                }
             }
         }
     }

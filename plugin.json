@@ -2,7 +2,7 @@
   "id": "webSearch",
   "name": "Web Search",
   "description": "Search the web with custom search engines",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "author": "devnullvoid",
   "icon": "search",
   "type": "launcher",

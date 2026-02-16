@@ -7,9 +7,10 @@ A DankMaterialShell launcher plugin for searching the web with 23+ built-in sear
 ## Features
 
 - **23+ Built-in Search Engines** - Google, DuckDuckGo, GitHub, Stack Overflow, and more
+- **Enable/Disable Engines** - Toggle individual search engines on/off to reduce clutter
 - **Custom Search Engines** - Add your own search engines with URL templates
 - **Keyword-Based Selection** - Type keywords to use specific engines (e.g., `github rust`)
-- **Configurable Default Engine** - Set your preferred search engine
+- **Configurable Default Engine** - Set any engine (built-in or custom) as default
 - **One-Click Search** - Select and press Enter to open browser
 - **Toast Notifications** - Visual feedback for every search
 - **Configurable Trigger** - Default `@` or set your own trigger
@@ -155,7 +156,8 @@ Access settings via DMS Settings → Plugins → Web Search:
 
 - **Trigger**: Set custom trigger (`@`, `!`, `ws`, etc.) or disable for always-on mode
   - Avoid triggers reserved by DMS or other plugins (e.g., `/` is used for file search).
-- **Default Search Engine**: Choose your preferred engine (Google, DuckDuckGo, Brave, Bing)
+- **Default Search Engine**: Choose your preferred engine from all available engines (built-in and custom)
+- **Enable/Disable Engines**: Toggle individual search engines on/off to reduce clutter
 - **Custom Search Engines**: Add/manage your own search engines
 
 ## Search Examples

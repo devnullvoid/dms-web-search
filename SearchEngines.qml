@@ -143,6 +143,20 @@ QtObject {
             keywords: ["aur", "arch", "packages"]
         },
         {
+            id: "nixpkgs",
+            name: "Nix Packages",
+            icon: "material:ac_unit",
+            url: "https://search.nixos.org/packages?channel=unstable&query=%s",
+            keywords: ["nixpkgs", "pkgs"]
+        },
+        {
+            id: "nixopts",
+            name: "NixOS Options",
+            icon: "material:ac_unit",
+            url: "https://search.nixos.org/options?channel=unstable&query=%s",
+            keywords: ["nixopts", "opts"]
+        },
+        {
             id: "npmjs",
             name: "npm",
             icon: "unicode:",

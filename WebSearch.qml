@@ -43,14 +43,6 @@ QtObject {
         const allEngines = builtInEngines.concat(searchEngines).filter(e => !disabledEngines.includes(e.id));
 
         if (!query || query.trim().length === 0) {
-            items.push({
-                name: "Type a search query",
-                icon: "unicode:🔍",
-                comment: "Search the web with your default engine (" + getEngineName(defaultEngine) + ")",
-                action: "noop",
-                categories: ["Web Search"]
-            });
-
             for (let i = 0; i < allEngines.length; i++) {
                 const engine = allEngines[i];
                 items.push({

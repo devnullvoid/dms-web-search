@@ -47,21 +47,21 @@ QtObject {
         {
             id: "github",
             name: "GitHub",
-            icon: "unicode:",
+            icon: "unicode:",
             url: "https://github.com/search?q=%s",
             keywords: ["github", "code", "git"]
         },
         {
             id: "stackoverflow",
             name: "Stack Overflow",
-            icon: "unicode:",
+            icon: "unicode:",
             url: "https://stackoverflow.com/search?q=%s",
             keywords: ["stackoverflow", "stack", "coding"]
         },
         {
             id: "reddit",
             name: "Reddit",
-            icon: "unicode:",
+            icon: "unicode:",
             url: "https://www.reddit.com/search?q=%s",
             keywords: ["reddit"]
         },
@@ -103,21 +103,21 @@ QtObject {
         {
             id: "twitter",
             name: "Twitter/X",
-            icon: "unicode:",
+            icon: "unicode:",
             url: "https://twitter.com/search?q=%s",
             keywords: ["twitter", "x", "social"]
         },
         {
             id: "linkedin",
             name: "LinkedIn",
-            icon: "unicode:",
+            icon: "unicode:",
             url: "https://www.linkedin.com/search/results/all/?keywords=%s",
             keywords: ["linkedin", "job", "professional"]
         },
         {
             id: "imdb",
             name: "IMDb",
-            icon: "unicode:",
+            icon: "unicode:",
             url: "https://www.imdb.com/find?q=%s",
             keywords: ["imdb", "movies", "tv"]
         },
@@ -138,7 +138,7 @@ QtObject {
         {
             id: "aur",
             name: "AUR",
-            icon: "unicode:",
+            icon: "material:package_2",
             url: "https://aur.archlinux.org/packages?K=%s",
             keywords: ["aur"]
         },
@@ -159,14 +159,14 @@ QtObject {
         {
             id: "npmjs",
             name: "npm",
-            icon: "unicode:",
+            icon: "unicode:",
             url: "https://www.npmjs.com/search?q=%s",
             keywords: ["npm", "node", "javascript"]
         },
         {
             id: "pypi",
             name: "PyPI",
-            icon: "unicode:",
+            icon: "unicode:",
             url: "https://pypi.org/search/?q=%s",
             keywords: ["pypi", "python", "pip"]
         },

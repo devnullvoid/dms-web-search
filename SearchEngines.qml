@@ -117,7 +117,7 @@ QtObject {
         {
             id: "imdb",
             name: "IMDb",
-            icon: "unicode:",
+            icon: "material:movie",
             url: "https://www.imdb.com/find?q=%s",
             keywords: ["imdb", "movies", "tv"]
         },
@@ -159,14 +159,14 @@ QtObject {
         {
             id: "npmjs",
             name: "npm",
-            icon: "unicode:",
+            icon: "material:javascript",
             url: "https://www.npmjs.com/search?q=%s",
             keywords: ["npm", "node", "javascript"]
         },
         {
             id: "pypi",
             name: "PyPI",
-            icon: "unicode:",
+            icon: "material:code",
             url: "https://pypi.org/search/?q=%s",
             keywords: ["pypi", "python", "pip"]
         },

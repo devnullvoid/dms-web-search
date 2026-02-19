@@ -78,25 +78,8 @@ PluginSettings {
         color: Theme.outlineVariant
     }
 
-    ToggleSetting {
-        id: noTriggerToggle
-        settingKey: "noTrigger"
-        label: "Always Active"
-        description: value ? "Items will always show in the launcher (no trigger needed)." : "Set the trigger text to activate web search. Type the trigger in the launcher followed by your search query."
-        defaultValue: false
-        onValueChanged: {
-            if (value) {
-                root.saveValue("trigger", "");
-            } else {
-                triggerSetting.commit();
-                root.saveValue("trigger", triggerSetting.value || "@");
-            }
-        }
-    }
-
     Column {
         id: triggerSetting
-        visible: !noTriggerToggle.value
         width: parent.width
         spacing: Theme.spacingS
         property string value: "@"
@@ -106,10 +89,11 @@ PluginSettings {
 
         function loadValue() {
             const loadedValue = root.loadValue("trigger", "@");
+            const normalizedValue = loadedValue && loadedValue.trim().length > 0 ? loadedValue : "@";
             if ((hasFieldFocus || isDirty) && isInitialized)
                 return;
-            value = loadedValue;
-            triggerField.text = loadedValue;
+            value = normalizedValue;
+            triggerField.text = normalizedValue;
             isInitialized = true;
             isDirty = false;
         }
@@ -779,13 +763,13 @@ PluginSettings {
             }
 
             StyledText {
-                text: noTriggerToggle.value ? "2. Type your search query directly" : "2. Type your trigger (default: @) followed by search query"
+                text: "2. Type your trigger (default: @) followed by search query"
                 font.pixelSize: Theme.fontSizeSmall
                 color: Theme.surfaceVariantText
             }
 
             StyledText {
-                text: noTriggerToggle.value ? "3. Example: 'linux kernel' or 'github rust'" : "3. Example: '@ linux kernel' or '@ github rust'"
+                text: "3. Example: '@ linux kernel' or '@ github rust'"
                 font.pixelSize: Theme.fontSizeSmall
                 color: Theme.surfaceVariantText
             }

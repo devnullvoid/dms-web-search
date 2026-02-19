@@ -8,6 +8,12 @@ A DankMaterialShell (DMS) launcher plugin for searching the web with 23+ built-i
 **Default Trigger**: `@`
 **Version**: 1.2.2
 
+## Recent Maintenance Notes (2026-02-18)
+- The `Always Active`/`noTrigger` setting has been removed from settings UI.
+- Trigger configuration is always visible and trigger-based usage is now the only documented path.
+- Trigger editing in settings now uses explicit Save semantics to avoid focus/reload overwrite issues in current upstream settings components.
+- If upstream `StringSetting` focus/reload behavior is fixed, this plugin can likely return to the shared setting component for Trigger input.
+
 ## Architecture Overview
 
 ```

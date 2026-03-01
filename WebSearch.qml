@@ -79,21 +79,35 @@ QtObject {
         let matchedEngineId = null;
         let searchQuery = query.trim();
         let fallbackQuery = query.trim();
+        let matchedEngineIds = [];
 
-        for (let i = 0; i < keywordMatchEngines.length; i++) {
-            const engine = keywordMatchEngines[i];
-            if (!engine.keywords)
-                continue;
-            for (let k = 0; k < engine.keywords.length; k++) {
-                const keyword = engine.keywords[k];
-                if (searchQuery.toLowerCase().startsWith(keyword + " ")) {
-                    matchedEngineId = engine.id;
-                    searchQuery = searchQuery.substring(keyword.length + 1).trim();
-                    break;
+        const firstSpaceIndex = fallbackQuery.indexOf(" ");
+        if (firstSpaceIndex > 0) {
+            const keywordToken = fallbackQuery.substring(0, firstSpaceIndex).toLowerCase();
+
+            for (let i = 0; i < keywordMatchEngines.length; i++) {
+                const engine = keywordMatchEngines[i];
+                if (!Array.isArray(engine.keywords))
+                    continue;
+
+                for (let k = 0; k < engine.keywords.length; k++) {
+                    const keyword = String(engine.keywords[k]).toLowerCase();
+                    if (keyword === keywordToken) {
+                        matchedEngineIds.push(engine.id);
+                        break;
+                    }
                 }
             }
-            if (matchedEngineId)
-                break;
+
+            if (matchedEngineIds.length > 0) {
+                matchedEngineId = matchedEngineIds[0];
+                searchQuery = fallbackQuery.substring(firstSpaceIndex + 1).trim();
+            }
+        }
+
+        const matchedEngineIdSet = {};
+        for (let i = 0; i < matchedEngineIds.length; i++) {
+            matchedEngineIdSet[matchedEngineIds[i]] = true;
         }
 
         const primaryEngineId = matchedEngineId || defaultEngine;
@@ -116,16 +130,32 @@ QtObject {
             });
         }
 
-        let secondaryIndex = 0;
+        const secondaryEngines = [];
         for (let i = 0; i < allEngines.length; i++) {
             const engine = allEngines[i];
             if (engine.id === primaryEngineId)
                 continue;
+            if (matchedEngineIdSet[engine.id])
+                secondaryEngines.push(engine);
+        }
+        for (let i = 0; i < allEngines.length; i++) {
+            const engine = allEngines[i];
+            if (engine.id === primaryEngineId)
+                continue;
+            if (!matchedEngineIdSet[engine.id])
+                secondaryEngines.push(engine);
+        }
+
+        let secondaryIndex = 0;
+        for (let i = 0; i < secondaryEngines.length; i++) {
+            const engine = secondaryEngines[i];
+            const useKeywordSearchQuery = !!matchedEngineIdSet[engine.id];
+            const engineQuery = matchedEngineId ? (useKeywordSearchQuery ? searchQuery : fallbackQuery) : searchQuery;
             items.push({
-                name: "Search with " + engine.name + ": " + (matchedEngineId ? fallbackQuery : searchQuery),
+                name: "Search with " + engine.name + ": " + engineQuery,
                 icon: engine.icon || "material:search",
                 comment: "Open in browser",
-                action: "search:" + engine.id + ":" + (matchedEngineId ? fallbackQuery : searchQuery),
+                action: "search:" + engine.id + ":" + engineQuery,
                 categories: ["Web Search"],
                 _preScored: SECONDARY_SCORE - secondaryIndex
             });

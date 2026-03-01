@@ -59,6 +59,7 @@ Use keywords to search specific engines directly:
 - `@ stackoverflow async rust` - Search Stack Overflow
 
 If a custom engine and a built-in engine share the same keyword, the custom engine takes priority.
+When multiple engines share the matched keyword, they are grouped at the top of results before other engines.
 
 ## Built-in Search Engines
 

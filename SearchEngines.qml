@@ -14,28 +14,28 @@ QtObject {
             name: "DuckDuckGo",
             icon: "material:shield",
             url: "https://duckduckgo.com/?q=%s",
-            keywords: ["ddg", "duckduckgo", "privacy"]
+            keywords: ["ddg", "duckduckgo", "privacy", "search"]
         },
         {
             id: "brave",
             name: "Brave Search",
             icon: "material:security",
             url: "https://search.brave.com/search?q=%s",
-            keywords: ["brave", "privacy"]
+            keywords: ["brave", "privacy", "search"]
         },
         {
             id: "bing",
             name: "Bing",
             icon: "material:language",
             url: "https://www.bing.com/search?q=%s",
-            keywords: ["bing", "microsoft"]
+            keywords: ["bing", "microsoft", "search"]
         },
         {
             id: "kagi",
             name: "Kagi",
             icon: "material:star_shine",
             url: "https://kagi.com/search?q=%s",
-            keywords: ["kagi", "privacy"]
+            keywords: ["kagi", "privacy", "search"]
         },
         {
             id: "youtube",
@@ -56,14 +56,14 @@ QtObject {
             name: "Stack Overflow",
             icon: "unicode:",
             url: "https://stackoverflow.com/search?q=%s",
-            keywords: ["stackoverflow", "stack", "coding"]
+            keywords: ["stackoverflow", "stack", "coding", "so"]
         },
         {
             id: "reddit",
             name: "Reddit",
             icon: "unicode:",
             url: "https://www.reddit.com/search?q=%s",
-            keywords: ["reddit"]
+            keywords: ["reddit", "social"]
         },
         {
             id: "wikipedia",
@@ -84,21 +84,21 @@ QtObject {
             name: "eBay",
             icon: "material:local_mall",
             url: "https://www.ebay.com/sch/i.html?_nkw=%s",
-            keywords: ["ebay", "shop", "auction"]
+            keywords: ["ebay", "shop", "shopping", "auction"]
         },
         {
             id: "maps",
             name: "Google Maps",
             icon: "material:map",
             url: "https://www.google.com/maps/search/%s",
-            keywords: ["maps", "location", "directions"]
+            keywords: ["maps", "map", "location", "directions"]
         },
         {
             id: "images",
             name: "Google Images",
             icon: "material:photo_library",
             url: "https://www.google.com/search?tbm=isch&q=%s",
-            keywords: ["images", "pictures", "photos"]
+            keywords: ["images", "image", "img", "pictures", "photos"]
         },
         {
             id: "twitter",
@@ -112,7 +112,7 @@ QtObject {
             name: "LinkedIn",
             icon: "unicode:",
             url: "https://www.linkedin.com/search/results/all/?keywords=%s",
-            keywords: ["linkedin", "job", "professional"]
+            keywords: ["linkedin", "job", "professional", "social"]
         },
         {
             id: "imdb",
@@ -133,28 +133,28 @@ QtObject {
             name: "Arch Linux Wiki",
             icon: "material:terminal",
             url: "https://wiki.archlinux.org/index.php?search=%s",
-            keywords: ["arch", "archwiki"]
+            keywords: ["arch", "archwiki", "linux", "wiki"]
         },
         {
             id: "aur",
             name: "AUR",
             icon: "material:package_2",
             url: "https://aur.archlinux.org/packages?K=%s",
-            keywords: ["aur", "arch"]
+            keywords: ["aur", "arch", "packages"]
         },
         {
             id: "nixpkgs",
             name: "Nix Packages",
             icon: "material:ac_unit",
             url: "https://search.nixos.org/packages?channel=unstable&query=%s",
-            keywords: ["nixpkgs", "pkgs", "nix"]
+            keywords: ["nixpkgs", "pkgs", "nix", "nixos", "packages"]
         },
         {
             id: "nixopts",
             name: "NixOS Options",
             icon: "material:ac_unit",
             url: "https://search.nixos.org/options?channel=unstable&query=%s",
-            keywords: ["nixopts", "opts"]
+            keywords: ["nixopts", "opts", "nixos", "options"]
         },
         {
             id: "npmjs",

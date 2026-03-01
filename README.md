@@ -66,15 +66,15 @@ When multiple engines share the matched keyword, they are grouped at the top of 
 ### General Search
 
 - **Google** - Keywords: `google`, `search`
-- **DuckDuckGo** - Keywords: `ddg`, `duckduckgo`, `privacy`
-- **Brave Search** - Keywords: `brave`, `privacy`
-- **Bing** - Keywords: `bing`, `microsoft`
-- **Kagi** - Keywords: `kagi`, `privacy`
+- **DuckDuckGo** - Keywords: `ddg`, `duckduckgo`, `privacy`, `search`
+- **Brave Search** - Keywords: `brave`, `privacy`, `search`
+- **Bing** - Keywords: `bing`, `microsoft`, `search`
+- **Kagi** - Keywords: `kagi`, `privacy`, `search`
 
 ### Development
 
 - **GitHub** - Keywords: `github`, `code`, `git`
-- **Stack Overflow** - Keywords: `stackoverflow`, `stack`, `coding`
+- **Stack Overflow** - Keywords: `stackoverflow`, `stack`, `coding`, `so`
 - **npm** - Keywords: `npm`, `node`, `javascript`
 - **PyPI** - Keywords: `pypi`, `python`, `pip`
 - **crates.io** - Keywords: `crates`, `rust`, `cargo`
@@ -82,15 +82,17 @@ When multiple engines share the matched keyword, they are grouped at the top of 
 
 ### Linux & Packages
 
-- **Arch Linux Wiki** - Keywords: `arch`, `linux`, `packages`
+- **Arch Linux Wiki** - Keywords: `arch`, `archwiki`, `linux`, `wiki`
 - **AUR** - Keywords: `aur`, `arch`, `packages`
+- **Nix Packages** - Keywords: `nixpkgs`, `pkgs`, `nix`, `nixos`, `packages`
+- **NixOS Options** - Keywords: `nixopts`, `opts`, `nixos`, `options`
 
 ### Social & Media
 
 - **YouTube** - Keywords: `youtube`, `video`, `yt`
-- **Reddit** - Keywords: `reddit`
+- **Reddit** - Keywords: `reddit`, `social`
 - **Twitter/X** - Keywords: `twitter`, `x`, `social`
-- **LinkedIn** - Keywords: `linkedin`, `job`, `professional`
+- **LinkedIn** - Keywords: `linkedin`, `job`, `professional`, `social`
 
 ### Reference
 
@@ -101,12 +103,12 @@ When multiple engines share the matched keyword, they are grouped at the top of 
 ### Shopping
 
 - **Amazon** - Keywords: `amazon`, `shop`, `shopping`
-- **eBay** - Keywords: `ebay`, `shop`, `auction`
+- **eBay** - Keywords: `ebay`, `shop`, `shopping`, `auction`
 
 ### Utilities
 
-- **Google Maps** - Keywords: `maps`, `location`, `directions`
-- **Google Images** - Keywords: `images`, `pictures`, `photos`
+- **Google Maps** - Keywords: `maps`, `map`, `location`, `directions`
+- **Google Images** - Keywords: `images`, `image`, `img`, `pictures`, `photos`
 
 ## Custom Search Engines
 

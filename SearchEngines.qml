@@ -140,7 +140,7 @@ QtObject {
             name: "AUR",
             icon: "material:package_2",
             url: "https://aur.archlinux.org/packages?K=%s",
-            keywords: ["aur"]
+            keywords: ["aur", "arch"]
         },
         {
             id: "nixpkgs",
@@ -154,7 +154,7 @@ QtObject {
             name: "NixOS Options",
             icon: "material:ac_unit",
             url: "https://search.nixos.org/options?channel=unstable&query=%s",
-            keywords: ["nixopts", "opts", "nix"]
+            keywords: ["nixopts", "opts"]
         },
         {
             id: "npmjs",

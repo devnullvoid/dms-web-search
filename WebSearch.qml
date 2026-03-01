@@ -79,7 +79,8 @@ QtObject {
         let matchedEngineId = null;
         let searchQuery = query.trim();
         let fallbackQuery = query.trim();
-        let matchedEngineIds = [];
+        let exactMatchedEngineIds = [];
+        let prefixMatchedEngineIds = [];
 
         const firstSpaceIndex = fallbackQuery.indexOf(" ");
         if (firstSpaceIndex > 0) {
@@ -90,24 +91,35 @@ QtObject {
                 if (!Array.isArray(engine.keywords))
                     continue;
 
+                let hasExactMatch = false;
+                let hasPrefixMatch = false;
                 for (let k = 0; k < engine.keywords.length; k++) {
                     const keyword = String(engine.keywords[k]).toLowerCase();
                     if (keyword === keywordToken) {
-                        matchedEngineIds.push(engine.id);
+                        hasExactMatch = true;
                         break;
                     }
+                    if (keyword.startsWith(keywordToken))
+                        hasPrefixMatch = true;
+                }
+
+                if (hasExactMatch) {
+                    exactMatchedEngineIds.push(engine.id);
+                } else if (hasPrefixMatch) {
+                    prefixMatchedEngineIds.push(engine.id);
                 }
             }
 
-            if (matchedEngineIds.length > 0) {
-                matchedEngineId = matchedEngineIds[0];
+            if (exactMatchedEngineIds.length > 0) {
+                matchedEngineId = exactMatchedEngineIds[0];
                 searchQuery = fallbackQuery.substring(firstSpaceIndex + 1).trim();
             }
         }
 
-        const matchedEngineIdSet = {};
-        for (let i = 0; i < matchedEngineIds.length; i++) {
-            matchedEngineIdSet[matchedEngineIds[i]] = true;
+        const promotedEngineIds = exactMatchedEngineIds.concat(prefixMatchedEngineIds);
+        const promotedEngineIdSet = {};
+        for (let i = 0; i < promotedEngineIds.length; i++) {
+            promotedEngineIdSet[promotedEngineIds[i]] = true;
         }
 
         const primaryEngineId = matchedEngineId || defaultEngine;
@@ -130,27 +142,41 @@ QtObject {
             });
         }
 
-        const secondaryEngines = [];
+        const allEngineIdSet = {};
         for (let i = 0; i < allEngines.length; i++) {
-            const engine = allEngines[i];
-            if (engine.id === primaryEngineId)
-                continue;
-            if (matchedEngineIdSet[engine.id])
-                secondaryEngines.push(engine);
+            allEngineIdSet[allEngines[i].id] = true;
         }
+
+        const secondaryEngines = [];
+        const secondarySeen = {};
+        for (let i = 0; i < keywordMatchEngines.length; i++) {
+            const engine = keywordMatchEngines[i];
+            if (engine.id === primaryEngineId)
+                continue;
+            if (!allEngineIdSet[engine.id])
+                continue;
+            if (!promotedEngineIdSet[engine.id])
+                continue;
+            if (secondarySeen[engine.id])
+                continue;
+            secondarySeen[engine.id] = true;
+            secondaryEngines.push(engine);
+        }
+
         for (let i = 0; i < allEngines.length; i++) {
             const engine = allEngines[i];
             if (engine.id === primaryEngineId)
                 continue;
-            if (!matchedEngineIdSet[engine.id])
-                secondaryEngines.push(engine);
+            if (promotedEngineIdSet[engine.id])
+                continue;
+            secondaryEngines.push(engine);
         }
 
         let secondaryIndex = 0;
         for (let i = 0; i < secondaryEngines.length; i++) {
             const engine = secondaryEngines[i];
-            const useKeywordSearchQuery = !!matchedEngineIdSet[engine.id];
-            const engineQuery = matchedEngineId ? (useKeywordSearchQuery ? searchQuery : fallbackQuery) : searchQuery;
+            const usePromotedQuery = !!promotedEngineIdSet[engine.id];
+            const engineQuery = matchedEngineId ? (usePromotedQuery ? searchQuery : fallbackQuery) : searchQuery;
             items.push({
                 name: "Search with " + engine.name + ": " + engineQuery,
                 icon: engine.icon || "material:search",

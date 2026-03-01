@@ -35,12 +35,30 @@ QtObject {
         trigger = pluginService.loadPluginData("webSearch", "trigger", "@");
         defaultEngine = pluginService.loadPluginData("webSearch", "defaultEngine", "google");
         searchEngines = pluginService.loadPluginData("webSearch", "searchEngines", []);
-        disabledEngines = pluginService.loadPluginData("webSearch", "disabledEngines", []);
+        disabledEngines = normalizeIdList(pluginService.loadPluginData("webSearch", "disabledEngines", []));
+    }
+
+    function normalizeIdList(value) {
+        if (Array.isArray(value))
+            return value.slice();
+        if (value === null || value === undefined)
+            return [];
+        if (typeof value === "string")
+            return value.length > 0 ? [value] : [];
+        if (typeof value.length === "number") {
+            const out = [];
+            for (let i = 0; i < value.length; i++) {
+                out.push(value[i]);
+            }
+            return out;
+        }
+        return [];
     }
 
     function getItems(query) {
         const items = [];
-        const allEngines = builtInEngines.concat(searchEngines).filter(e => !disabledEngines.includes(e.id));
+        const disabled = normalizeIdList(disabledEngines);
+        const allEngines = builtInEngines.concat(searchEngines).filter(e => disabled.indexOf(e.id) === -1);
 
         if (!query || query.trim().length === 0) {
             for (let i = 0; i < allEngines.length; i++) {
@@ -192,7 +210,7 @@ QtObject {
     onDisabledEnginesChanged: {
         if (!pluginService)
             return;
-        pluginService.savePluginData("webSearch", "disabledEngines", disabledEngines);
+        pluginService.savePluginData("webSearch", "disabledEngines", normalizeIdList(disabledEngines));
         itemsChanged();
     }
 }

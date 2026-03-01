@@ -2,6 +2,7 @@ import QtQuick
 import qs.Common
 import qs.Widgets
 import qs.Modules.Plugins
+import qs.Services
 
 PluginSettings {
     id: root
@@ -40,20 +41,68 @@ PluginSettings {
     }
 
     function syncSettingsState() {
-        customEngines = root.loadValue("searchEngines", []);
-        disabledEngineIds = root.loadValue("disabledEngines", []);
+        customEngines = normalizeEngineList(PluginService.loadPluginData("webSearch", "searchEngines", []));
+        disabledEngineIds = normalizeIdList(PluginService.loadPluginData("webSearch", "disabledEngines", []));
         defaultEngineOptions = buildDefaultEngineOptions(customEngines);
+    }
+
+    function normalizeIdList(value) {
+        if (Array.isArray(value))
+            return value.slice();
+        if (value === null || value === undefined)
+            return [];
+        if (typeof value === "string")
+            return value.length > 0 ? [value] : [];
+        if (typeof value.length === "number") {
+            const out = [];
+            for (let i = 0; i < value.length; i++) {
+                out.push(value[i]);
+            }
+            return out;
+        }
+        return [];
+    }
+
+    function normalizeEngineList(value) {
+        if (Array.isArray(value))
+            return value.slice();
+        if (value === null || value === undefined)
+            return [];
+        if (typeof value.length === "number") {
+            const out = [];
+            for (let i = 0; i < value.length; i++) {
+                out.push(value[i]);
+            }
+            return out;
+        }
+        return [];
     }
 
     function setCustomEngines(engines) {
-        customEngines = engines;
+        customEngines = normalizeEngineList(engines);
         defaultEngineOptions = buildDefaultEngineOptions(customEngines);
-        root.saveValue("searchEngines", customEngines);
+        PluginService.savePluginData("webSearch", "searchEngines", customEngines);
     }
 
     function setDisabledEngineIds(ids) {
-        disabledEngineIds = ids;
-        root.saveValue("disabledEngines", disabledEngineIds);
+        const normalized = normalizeIdList(ids);
+        disabledEngineIds = normalized;
+        PluginService.savePluginData("webSearch", "disabledEngines", normalized);
+    }
+
+    function isEngineEnabled(engineId) {
+        const disabled = Array.isArray(disabledEngineIds) ? disabledEngineIds : [];
+        return disabled.indexOf(engineId) === -1;
+    }
+
+    function toggleEngineEnabled(engineId) {
+        const disabled = Array.isArray(disabledEngineIds) ? disabledEngineIds : [];
+        const isEnabled = disabled.indexOf(engineId) === -1;
+        if (isEnabled) {
+            setDisabledEngineIds(disabled.concat([engineId]));
+        } else {
+            setDisabledEngineIds(disabled.filter(id => id !== engineId));
+        }
     }
 
     StyledText {
@@ -581,6 +630,7 @@ PluginSettings {
                         id: engineMouseArea
                         anchors.fill: parent
                         hoverEnabled: true
+                        acceptedButtons: Qt.NoButton
                         propagateComposedEvents: true
                     }
                 }
@@ -681,7 +731,7 @@ PluginSettings {
                             height: 24
                             radius: 12
                             color: {
-                                const isEnabled = !root.disabledEngineIds.includes(modelData.id);
+                                const isEnabled = root.isEngineEnabled(modelData.id);
                                 return isEnabled ? Theme.primary : Theme.surfaceVariant;
                             }
 
@@ -691,7 +741,7 @@ PluginSettings {
                                 radius: 10
                                 color: Theme.surface
                                 x: {
-                                    const isEnabled = !root.disabledEngineIds.includes(modelData.id);
+                                    const isEnabled = root.isEngineEnabled(modelData.id);
                                     return isEnabled ? parent.width - width - 2 : 2;
                                 }
                                 y: 2
@@ -701,25 +751,6 @@ PluginSettings {
                                 }
                             }
 
-                            MouseArea {
-                                id: toggleArea
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: {
-                                    const disabled = root.disabledEngineIds;
-                                    const isEnabled = !disabled.includes(modelData.id);
-
-                                    if (isEnabled) {
-                                        // Disable the engine
-                                        root.setDisabledEngineIds(disabled.concat([modelData.id]));
-                                    } else {
-                                        // Enable the engine
-                                        const updated = disabled.filter(id => id !== modelData.id);
-                                        root.setDisabledEngineIds(updated);
-                                    }
-                                }
-                            }
                         }
                     }
 
@@ -727,7 +758,9 @@ PluginSettings {
                         id: engineToggleMouseArea
                         anchors.fill: parent
                         hoverEnabled: true
-                        propagateComposedEvents: true
+                        preventStealing: true
+                        cursorShape: Qt.PointingHandCursor
+                        onPressed: root.toggleEngineEnabled(modelData.id)
                     }
                 }
             }

@@ -58,6 +58,8 @@ Use keywords to search specific engines directly:
 - `@ wiki quantum physics` - Search Wikipedia
 - `@ stackoverflow async rust` - Search Stack Overflow
 
+If a custom engine and a built-in engine share the same keyword, the custom engine takes priority.
+
 ## Built-in Search Engines
 
 ### General Search

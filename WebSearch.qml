@@ -59,6 +59,7 @@ QtObject {
         const items = [];
         const disabled = normalizeIdList(disabledEngines);
         const allEngines = builtInEngines.concat(searchEngines).filter(e => disabled.indexOf(e.id) === -1);
+        const keywordMatchEngines = searchEngines.concat(builtInEngines).filter(e => disabled.indexOf(e.id) === -1);
 
         if (!query || query.trim().length === 0) {
             for (let i = 0; i < allEngines.length; i++) {
@@ -79,8 +80,8 @@ QtObject {
         let searchQuery = query.trim();
         let fallbackQuery = query.trim();
 
-        for (let i = 0; i < allEngines.length; i++) {
-            const engine = allEngines[i];
+        for (let i = 0; i < keywordMatchEngines.length; i++) {
+            const engine = keywordMatchEngines[i];
             if (!engine.keywords)
                 continue;
             for (let k = 0; k < engine.keywords.length; k++) {

@@ -147,7 +147,7 @@ QtObject {
             name: "Nix Packages",
             icon: "material:ac_unit",
             url: "https://search.nixos.org/packages?channel=unstable&query=%s",
-            keywords: ["nixpkgs", "pkgs"]
+            keywords: ["nixpkgs", "pkgs", "nix"]
         },
         {
             id: "nixopts",

@@ -154,7 +154,7 @@ QtObject {
             name: "NixOS Options",
             icon: "material:ac_unit",
             url: "https://search.nixos.org/options?channel=unstable&query=%s",
-            keywords: ["nixopts", "opts"]
+            keywords: ["nixopts", "opts", "nix"]
         },
         {
             id: "npmjs",

@@ -10,8 +10,21 @@ QtObject {
     property var searchEngines: []
     property string defaultEngine: "google"
     property var disabledEngines: []
+    property var ddgBangs: []
+    property var cachedDdgBangs: []
 
     signal itemsChanged
+
+    WorkerScript {
+        id: bangWorker
+        source: "DDGBangWorker.js"
+        onMessage: (message) => {
+            if (message.results) {
+                root.ddgBangs = message.results;
+                root.itemsChanged();
+            }
+        }
+    }
 
     property var builtInEngines: {
         const enginesComponent = Qt.createComponent("SearchEngines.qml");
@@ -36,6 +49,7 @@ QtObject {
         defaultEngine = pluginService.loadPluginData("webSearch", "defaultEngine", "google");
         searchEngines = pluginService.loadPluginData("webSearch", "searchEngines", []);
         disabledEngines = normalizeIdList(pluginService.loadPluginData("webSearch", "disabledEngines", []));
+        cachedDdgBangs = pluginService.loadPluginData("webSearch", "ddgBangs", []);
     }
 
     function normalizeIdList(value) {
@@ -82,6 +96,32 @@ QtObject {
         let exactMatchedEngineIds = [];
         let prefixMatchedEngineIds = [];
 
+        // Check if query starts with '!' for DDG Bangs
+        if (fallbackQuery.startsWith("!") && cachedDdgBangs.length > 0) {
+            const firstSpace = fallbackQuery.indexOf(" ");
+            const bangPart = firstSpace === -1 ? fallbackQuery.substring(1) : fallbackQuery.substring(1, firstSpace);
+            const bangQuery = firstSpace === -1 ? "" : fallbackQuery.substring(firstSpace + 1).trim();
+
+            // Always update suggestions from worker
+            bangWorker.sendMessage({ query: bangPart, bangs: cachedDdgBangs });
+
+            // If we have suggestions from last message, show them
+            if (ddgBangs.length > 0) {
+                for (let i = 0; i < ddgBangs.length; i++) {
+                    const bang = ddgBangs[i];
+                    items.push({
+                        name: "Search " + bang.name + " (" + bang.trigger + "): " + (bangQuery || "..."),
+                        icon: "material:search",
+                        comment: "DuckDuckGo Bang",
+                        action: "bangSearch:" + bang.trigger + ":" + bangQuery,
+                        categories: ["Web Search"],
+                        _preScored: 10000 - i
+                    });
+                }
+                return items;
+            }
+        }
+
         const firstSpaceIndex = fallbackQuery.indexOf(" ");
         if (firstSpaceIndex > 0) {
             const keywordToken = fallbackQuery.substring(0, firstSpaceIndex).toLowerCase();
@@ -125,9 +165,6 @@ QtObject {
         const primaryEngineId = matchedEngineId || defaultEngine;
         const primaryEngineObj = allEngines.find(e => e.id === primaryEngineId);
 
-        // Use _preScored to ensure DMS preserves our item ordering
-        // Higher _preScored = appears first in results (DMS Scorer.js respects this)
-        // This requires DMS fix: ItemTransformers.js must preserve _preScored
         const PRIMARY_SCORE = 10000;
         const SECONDARY_SCORE = 1000;
 
@@ -203,6 +240,9 @@ QtObject {
         case "search":
             performSearch(actionParts);
             break;
+        case "bangSearch":
+            performBangSearch(actionParts);
+            break;
         default:
             showToast("Unknown action: " + actionType);
         }
@@ -225,6 +265,23 @@ QtObject {
 
         Quickshell.execDetached(["xdg-open", url]);
         showToast("Searching " + engine.name + " for: " + query);
+    }
+
+    function performBangSearch(actionParts) {
+        const triggerPart = actionParts[1];
+        const query = actionParts.slice(2).join(":");
+
+        const bang = cachedDdgBangs.find(b => b.t === triggerPart);
+        if (!bang) {
+            showToast("Bang not found: !" + triggerPart);
+            return;
+        }
+
+        const encodedQuery = encodeQuery(query);
+        const url = bang.u.replace("%s", encodedQuery);
+
+        Quickshell.execDetached(["xdg-open", url]);
+        showToast("Searching " + bang.s + " for: " + query);
     }
 
     function showToast(message) {

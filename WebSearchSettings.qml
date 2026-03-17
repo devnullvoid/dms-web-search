@@ -3,6 +3,7 @@ import qs.Common
 import qs.Widgets
 import qs.Modules.Plugins
 import qs.Services
+import "DDGSyncHelper.js" as DDGSync
 
 PluginSettings {
     id: root
@@ -12,6 +13,8 @@ PluginSettings {
     property var customEngines: []
     property var disabledEngineIds: []
     property var defaultEngineOptions: []
+    property string lastSync: "Never"
+    property bool isSyncing: false
 
     property var builtInEnginesList: {
         const enginesComponent = Qt.createComponent("SearchEngines.qml");
@@ -44,6 +47,7 @@ PluginSettings {
         customEngines = normalizeEngineList(PluginService.loadPluginData("webSearch", "searchEngines", []));
         disabledEngineIds = normalizeIdList(PluginService.loadPluginData("webSearch", "disabledEngines", []));
         defaultEngineOptions = buildDefaultEngineOptions(customEngines);
+        lastSync = PluginService.loadPluginData("webSearch", "lastSync", "Never");
     }
 
     function normalizeIdList(value) {
@@ -219,6 +223,68 @@ PluginSettings {
         description: "The search engine used when no keyword is specified. Includes all built-in and custom engines."
         options: root.defaultEngineOptions
         defaultValue: "google"
+    }
+
+    StyledRect {
+        width: parent.width
+        height: 1
+        color: Theme.outlineVariant
+    }
+
+    Column {
+        width: parent.width
+        spacing: Theme.spacingS
+
+        StyledText {
+            text: "DuckDuckGo Bangs"
+            font.pixelSize: Theme.fontSizeMedium
+            font.weight: Font.Medium
+            color: Theme.surfaceText
+        }
+
+        StyledText {
+            text: "Sync with DuckDuckGo's database of 13,000+ !bang shortcuts. Once synced, you can use them by typing '!' followed by the bang (e.g., !g for Google, !w for Wikipedia)."
+            font.pixelSize: Theme.fontSizeSmall
+            color: Theme.surfaceVariantText
+            width: parent.width
+            wrapMode: Text.WordWrap
+        }
+
+        Row {
+            width: parent.width
+            spacing: Theme.spacingM
+
+            DankButton {
+                text: root.isSyncing ? "Syncing..." : "Sync Now"
+                iconName: "sync"
+                enabled: !root.isSyncing
+                onClicked: {
+                    root.isSyncing = true;
+                    DDGSync.syncBangs(PluginService, function(success, result) {
+                        root.isSyncing = false;
+                        if (success) {
+                            root.lastSync = new Date().toLocaleString();
+                            if (typeof ToastService !== "undefined") {
+                                ToastService.showInfo("Web Search", "Successfully synced " + result + " bangs!");
+                            }
+                        } else {
+                            if (typeof ToastService !== "undefined") {
+                                ToastService.showError("Failed to sync bangs: " + result);
+                            }
+                        }
+                    });
+                }
+            }
+
+            Column {
+                anchors.verticalCenter: parent.verticalCenter
+                StyledText {
+                    text: "Last Sync: " + root.lastSync
+                    font.pixelSize: Theme.fontSizeSmall
+                    color: Theme.surfaceVariantText
+                }
+            }
+        }
     }
 
     StyledRect {

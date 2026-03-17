@@ -141,7 +141,7 @@ PluginSettings {
         property bool isDirty: false
 
         function loadValue() {
-            const loadedValue = root.loadValue("trigger", "@");
+            const loadedValue = PluginService.loadPluginData("webSearch", "trigger", "@");
             const normalizedValue = loadedValue && loadedValue.trim().length > 0 ? loadedValue : "@";
             if ((hasFieldFocus || isDirty) && isInitialized)
                 return;
@@ -157,7 +157,7 @@ PluginSettings {
             const cleaned = triggerField.text.trim().length > 0 ? triggerField.text.trim() : "@";
             if (cleaned !== value) {
                 value = cleaned;
-                root.saveValue("trigger", value);
+                PluginService.savePluginData("webSearch", "trigger", value);
             }
             triggerField.text = value;
             isDirty = false;

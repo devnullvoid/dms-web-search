@@ -12,11 +12,11 @@ QtObject {
     property var disabledEngines: []
     property var ddgBangs: []
     property var cachedDdgBangs: []
+    property string lastBangQuery: ""
 
     signal itemsChanged
 
-    WorkerScript {
-        id: bangWorker
+    property WorkerScript bangWorker: WorkerScript {
         source: "DDGBangWorker.js"
         onMessage: (message) => {
             if (message.results) {
@@ -102,8 +102,10 @@ QtObject {
             const bangPart = firstSpace === -1 ? fallbackQuery.substring(1) : fallbackQuery.substring(1, firstSpace);
             const bangQuery = firstSpace === -1 ? "" : fallbackQuery.substring(firstSpace + 1).trim();
 
-            // Always update suggestions from worker
-            bangWorker.sendMessage({ query: bangPart, bangs: cachedDdgBangs });
+            if (bangPart !== lastBangQuery) {
+                lastBangQuery = bangPart;
+                bangWorker.sendMessage({ query: bangPart, bangs: cachedDdgBangs });
+            }
 
             // If we have suggestions from last message, show them
             if (ddgBangs.length > 0) {

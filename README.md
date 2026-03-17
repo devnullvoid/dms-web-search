@@ -7,6 +7,7 @@ A DankMaterialShell launcher plugin for searching the web with 23+ built-in sear
 ## Features
 
 - **23+ Built-in Search Engines** - Google, DuckDuckGo, GitHub, Stack Overflow, and more
+- **DuckDuckGo !Bangs Support** - Support for 13,000+ !bang shortcuts
 - **Enable/Disable Engines** - Toggle individual search engines on/off to reduce clutter
 - **Custom Search Engines** - Add your own search engines with URL templates
 - **Keyword-Based Selection** - Type keywords to use specific engines (e.g., `github rust`)
@@ -155,6 +156,27 @@ URL: https://gitlab.com/search?search=%s
 Keywords: gitlab,code
 ```
 
+## DuckDuckGo !Bangs
+
+The plugin now supports DuckDuckGo's massive library of over 13,000 "!bang" shortcuts. This allows you to search almost any site on the web directly from your launcher without needing to manually add them as custom engines.
+
+### Setup
+
+1. Open **Settings** → **Plugins** → **Web Search**.
+2. Click **"Sync Now"** in the DuckDuckGo Bangs section to download the latest bang database.
+3. Once synced, you're ready to go!
+
+### Usage
+
+Simply type `!` followed by the bang trigger and your search query:
+
+- `!w quantum physics` - Search Wikipedia
+- `!g dms-web-search` - Search Google
+- `!gh dms-plugins` - Search GitHub
+- `!yt rust tutorial` - Search YouTube
+
+The plugin will provide instant suggestions for matching bangs as you type. Searches are performed client-side, bypassing DuckDuckGo's redirect for faster results.
+
 ## Configuration
 
 Access settings via DMS Settings → Plugins → Web Search:
@@ -165,70 +187,11 @@ Access settings via DMS Settings → Plugins → Web Search:
 - **Enable/Disable Engines**: Toggle individual search engines on/off to reduce clutter
 - **Custom Search Engines**: Add/manage your own search engines
 
-## Search Examples
-
-### General Queries
-
-```
-@ rust programming         # Search with default engine
-@ how to install arch      # General search
-```
-
-### Development
-
-```
-@ github awesome-linux     # Search GitHub
-@ stackoverflow async rust # Search Stack Overflow
-@ npm react hooks          # Search npm packages
-@ pypi requests            # Search Python packages
-```
-
-### Linux
-
-```
-@ arch firefox             # Search Arch packages
-@ aur brave-bin            # Search AUR
-@ wiki systemd             # Search Wikipedia
-```
-
-### Media
-
-```
-@ youtube rust tutorial    # Search YouTube
-@ reddit linux gaming      # Search Reddit
-@ imdb inception           # Search IMDb
-```
-
 ## Requirements
 
 - DankMaterialShell >= 0.1.0
 - Web browser (default system browser via `xdg-open`)
 - Wayland compositor
-
-## Compatibility
-
-- **Compositors**: Niri and Hyprland
-- **Distros**: Universal - works on any Linux distribution
-- **Browsers**: Works with any default browser
-
-## Technical Details
-
-- **Type**: Launcher plugin
-- **Trigger**: `@` (configurable)
-- **Language**: QML (Qt Modeling Language)
-- **Browser Launch**: Uses `xdg-open` for system default browser
-
-## Tips & Tricks
-
-1. **Keyword Shortcuts**: Type engine keywords first for direct search
-   - `github rust` instead of `@ github rust`
-
-2. **Combine Keywords**: Use multiple keywords to narrow results
-   - `stackoverflow rust async await`
-
-3. **Custom Engines**: Add frequently-used sites for quick access
-   - Add your company's internal documentation
-   - Add specialized search engines for your workflow
 
 ## Contributing
 

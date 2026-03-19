@@ -1,26 +1,34 @@
 # AGENTS.md - DMS Web Search
 
 ## Project Overview
-A DankMaterialShell (DMS) launcher plugin for searching the web with 23+ built-in search engines and support for custom search engines.
+A DankMaterialShell (DMS) launcher plugin for searching the web with 23+ built-in search engines and support for custom search engines, including integration with 13,000+ DuckDuckGo !bangs.
 
 **Language**: QML (Qt Modeling Language)
 **Type**: Launcher plugin for DankMaterialShell
 **Default Trigger**: `@`
-**Version**: 1.2.2
+**Version**: 1.4.0
 
-## Recent Maintenance Notes (2026-02-18)
-- The `Always Active`/`noTrigger` setting has been removed from settings UI.
-- Trigger configuration is always visible and trigger-based usage is now the only documented path.
-- Trigger editing in settings now uses explicit Save semantics to avoid focus/reload overwrite issues in current upstream settings components.
-- If upstream `StringSetting` focus/reload behavior is fixed, this plugin can likely return to the shared setting component for Trigger input.
+## Recent Maintenance Notes (2026-03-17)
+- Added DuckDuckGo !bang functionality (#14).
+- Implemented `DDGBangWorker.js` for off-thread bang filtering to maintain UI performance.
+- Added `DDGSyncHelper.js` for fetching and local caching of the 13k+ DDG bang database.
+- Integrated sync UI and status in `WebSearchSettings.qml`.
+- Added fallback logic in `WebSearch.qml` to handle `!` prefixed queries.
 
 ## Architecture Overview
 
 ```
 ┌─────────────────────────────────────────────────────┐
 │  Built-in Search Engines                            │
-│  Defined in WebSearch.qml                           │
+│  Defined in SearchEngines.qml                       │
 │  23+ engines with keywords and URL templates        │
+└─────────────────────────────────────────────────────┘
+                      ↓
+┌─────────────────────────────────────────────────────┐
+│  DuckDuckGo !Bangs (Optional Sync)                  │
+│  - Synced from duckduckgo.com/bang.js               │
+│  - Cached locally in plugin data                    │
+│  - Filtered off-thread via DDGBangWorker.js         │
 └─────────────────────────────────────────────────────┘
                       ↓
 ┌─────────────────────────────────────────────────────┐
@@ -28,14 +36,16 @@ A DankMaterialShell (DMS) launcher plugin for searching the web with 23+ built-i
 │  - Custom search engines                            │
 │  - Default engine preference                        │
 │  - Trigger configuration                            │
+│  - Synced DDG bangs and last sync timestamp         │
 └─────────────────────────────────────────────────────┘
                       ↓
 ┌─────────────────────────────────────────────────────┐
 │  Query Processing                                    │
-│  1. Check for keyword prefix (e.g., "github rust")  │
-│  2. Match to specific engine or use default         │
-│  3. Generate search URL with encoded query          │
-│  4. Launch in browser via xdg-open                  │
+│  1. Check for '!' prefix (DDG Bangs)                │
+│  2. Check for keyword prefix (e.g., "github rust")  │
+│  3. Match to specific engine or use default         │
+│  4. Generate search URL with encoded query          │
+│  5. Launch in browser via xdg-open                  │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -43,14 +53,16 @@ A DankMaterialShell (DMS) launcher plugin for searching the web with 23+ built-i
 
 ### Core Files
 - **plugin.json** - Plugin metadata, version, trigger, capabilities
-- **WebSearch.qml** - Main component (~350 lines)
-  - Built-in engine definitions
-  - Query processing and keyword matching
+- **WebSearch.qml** - Main component (~400 lines)
+  - Core search orchestration
+  - Integrated `WorkerScript` for DDG bangs
   - Browser launching logic
-- **WebSearchSettings.qml** - Settings UI (~700 lines)
-  - Default engine selection
-  - Custom engine management
-  - Trigger configuration
+- **WebSearchSettings.qml** - Settings UI (~950 lines)
+  - Management of engines and trigger
+  - DDG Bang sync control
+- **SearchEngines.qml** - Built-in engine definitions
+- **DDGBangWorker.js** - Off-thread logic for filtering 13k+ bangs
+- **DDGSyncHelper.js** - Utility for fetching and optimizing DDG bang JSON
 
 ## Key Concepts
 
@@ -67,16 +79,13 @@ Each search engine is defined as a JavaScript object:
 }
 ```
 
-### Engine Categories
-Engines are organized by purpose:
-
-**General Search**: Google, DuckDuckGo, Brave, Bing, Kagi
-**Development**: GitHub, Stack Overflow, npm, PyPI, crates.io, MDN
-**Linux**: Arch Wiki, AUR
-**Social/Media**: YouTube, Reddit, Twitter, LinkedIn
-**Reference**: Wikipedia, Google Translate, IMDb
-**Shopping**: Amazon, eBay
-**Utilities**: Google Maps, Google Images
+### DuckDuckGo !Bangs
+Bangs are handled as a fallback mechanism:
+1. User types query starting with `!`.
+2. `WebSearch.qml` sends trigger part to `DDGBangWorker.js`.
+3. Worker filters cached bangs (prioritizing exact matches and prefix matches).
+4. Suggestions are returned to the UI.
+5. Search execution bypasses DDG redirects by using the direct URL template.
 
 ### Keyword Matching
 The plugin supports keyword-based engine selection:
@@ -85,25 +94,15 @@ The plugin supports keyword-based engine selection:
 3. Matches to GitHub engine
 4. Searches for "rust async" on GitHub
 
-If no keyword matches, the default engine is used.
-
-### URL Encoding
-Queries are encoded using simple space-to-plus conversion:
-```javascript
-function encodeQuery(str) {
-    return str.replace(/ /g, "+");
-}
-```
-
-For complex encoding needs, this could be enhanced with `encodeURIComponent()`.
+If no keyword matches and it's not a `!` query, the default engine is used.
 
 ## Development Workflow
 
 ### 1. Adding Built-in Search Engines
 
-**Location**: `WebSearch.qml` lines 15-184
+**Location**: `SearchEngines.qml`
 
-Add new engine to `builtInEngines` array:
+Add new engine to `engines` array:
 
 ```qml
 {
@@ -115,245 +114,57 @@ Add new engine to `builtInEngines` array:
 }
 ```
 
-**Important**:
-- `id` must be unique
-- `url` must contain `%s` placeholder
-- `keywords` are optional but recommended
-- Icons can be `material:icon_name` or `unicode:🔍`
+### 2. Modifying Bang Logic
 
-### 2. Modifying Query Processing
+**Location**: `DDGBangWorker.js`
 
-**Location**: `WebSearch.qml` lines 201-275
-
-The `getItems(query)` function:
-1. Handles empty queries (shows all engines)
-2. Matches keywords in query
-3. Extracts search terms
-4. Generates result items
-
-**Key logic**:
-```javascript
-// Keyword matching (lines 232-246)
-for (let i = 0; i < allEngines.length; i++) {
-    const engine = allEngines[i];
-    for (let k = 0; k < engine.keywords.length; k++) {
-        const keyword = engine.keywords[k];
-        if (searchQuery.toLowerCase().startsWith(keyword + " ")) {
-            matchedEngineId = engine.id;
-            searchQuery = searchQuery.substring(keyword.length + 1).trim();
-            break;
-        }
-    }
-}
-```
+The worker handles the heavy lifting of searching 13,000+ items. Filtering should always prioritize:
+1. Exact trigger matches (`trigger === query`)
+2. Prefix matches (`trigger.startsWith(query)`)
+3. Name matches (`name.includes(query)`)
 
 ### 3. Testing Changes
 
-**After modifying WebSearch.qml:**
-1. Save changes
-2. Restart DMS
-3. Test with `@ [query]` in launcher
-4. Verify correct engine is selected
-5. Verify browser opens with correct search
-
 **Testing checklist**:
-- [ ] Empty query shows all engines
+- [ ] Sync DDG bangs successfully in Settings
+- [ ] `!` queries provide relevant suggestions instantly
 - [ ] Keyword matching works (e.g., `@ github test`)
-- [ ] Default engine used when no keyword
-- [ ] URL encoding handles special characters
-- [ ] Toast notifications appear
-- [ ] Browser launches successfully
-
-### 4. Custom Engines (User-Added)
-
-Users can add custom engines via settings UI. These are stored in DMS settings and merged with built-in engines at runtime.
-
-**Storage location**: DMS plugin settings (managed by pluginService)
-**Settings keys**:
-- `webSearch.searchEngines` - Array of custom engines
-- `webSearch.defaultEngine` - Default engine ID
-- `webSearch.trigger` - Trigger string
-
-## Common Tasks
-
-### Add a new built-in engine
-1. Open `WebSearch.qml`
-2. Add object to `builtInEngines` array (line ~184)
-3. Include id, name, icon, url, keywords
-4. Restart DMS
-5. Test with keyword search
-
-### Change default engine
-1. Modify `defaultEngine` property (line 11)
-2. Or let users configure via Settings UI
-
-### Add new icon types
-Icons support two formats:
-- `material:icon_name` - Material Symbols
-- `unicode:🔍` - Unicode emoji or Nerd Font glyphs
-
-### Debug keyword matching
-Add console logging in `getItems()`:
-```javascript
-console.log("Matched engine:", matchedEngineId);
-console.log("Search query:", searchQuery);
-```
+- [ ] Default engine used when no keyword/bang
+- [ ] Browser launches successfully with correct URL
 
 ## Important QML Details
 
+### WorkerScript Integration
+In `WebSearch.qml`, the worker must be assigned to a property to avoid `QtObject` child assignment errors:
+
+```qml
+property WorkerScript bangWorker: WorkerScript {
+    source: "DDGBangWorker.js"
+    onMessage: (message) => { ... }
+}
+```
+
 ### Settings Persistence
-**Location**: Lines 193-199, 329-348
-
-Settings are loaded/saved using `pluginService`:
-```javascript
-function loadSettings() {
-    trigger = pluginService.loadPluginData("webSearch", "trigger", "@");
-    defaultEngine = pluginService.loadPluginData("webSearch", "defaultEngine", "google");
-    searchEngines = pluginService.loadPluginData("webSearch", "searchEngines", []);
-}
-```
-
-Changes automatically save when properties change:
-```javascript
-onTriggerChanged: {
-    pluginService.savePluginData("webSearch", "trigger", trigger);
-}
-```
-
-### Browser Launch
-**Location**: Lines 294-311
-
-Uses Quickshell's `execDetached()` with `xdg-open`:
-```javascript
-Quickshell.execDetached(["xdg-open", url]);
-```
-
-This launches the user's default browser with the search URL.
-
-### Toast Notifications
-**Location**: Lines 313-317
-
-Optional toast notifications via ToastService (if available):
-```javascript
-function showToast(message) {
-    if (typeof ToastService !== "undefined") {
-        ToastService.showInfo("Web Search", message);
-    }
-}
-```
+Settings include the massive `ddgBangs` array. Ensure `PluginService` can handle the data size (optimized in `DDGSyncHelper.js` by stripping unused fields).
 
 ## Troubleshooting
 
-### Searches not opening in browser
-1. Verify `xdg-open` is installed: `which xdg-open`
-2. Check default browser is set: `xdg-settings get default-web-browser`
-3. Test manually: `xdg-open "https://google.com"`
+### Bangs not showing
+1. Verify "Last Sync" in Settings is not "Never".
+2. Check if query starts with `!` (the trigger for bangs).
+3. Ensure `DDGBangWorker.js` is correctly linked/available.
 
-### Keywords not matching
-1. Verify keyword is in engine's `keywords` array
-2. Check keyword is lowercase (matching is case-insensitive)
-3. Ensure space after keyword: `github rust` (not `githubrust`)
-
-### Custom engines not appearing
-1. Check Settings UI saved the engine
-2. Verify engine has required fields (id, name, url)
-3. Restart DMS to reload settings
-
-### URL encoding issues
-For special characters (?, &, =), the current simple encoding may fail. Consider using:
-```javascript
-function encodeQuery(str) {
-    return encodeURIComponent(str);
-}
-```
-
-## Configuration
-
-### plugin.json
-- **id**: `webSearch`
-- **trigger**: `@` (configurable by user)
-- **type**: `launcher`
-- **capabilities**: `["web-search", "custom-engines"]`
-
-### Settings Storage Keys
-- `webSearch.trigger` - Trigger character/string
-- `webSearch.defaultEngine` - Default engine ID
-- `webSearch.searchEngines` - Array of custom engines
+### Slow UI during search
+If the UI stutters while typing `!`, check that `DDGBangWorker.js` is actually running off-thread and not being called synchronously somehow.
 
 ## Version Bumping
 
 **Location**: `plugin.json` line 5
 
-**Versioning scheme**: Semantic versioning
-- Patch (1.2.x): Bug fixes, icon updates
-- Minor (1.x.0): New built-in engines, new features
-- Major (x.0.0): Breaking changes, architecture changes
+- **1.4.0**: Added DDG Bangs integration.
 
-## Dependencies
+## Author
 
-**Runtime**:
-- DankMaterialShell >= 0.1.0
-- xdg-open (xdg-utils package)
-- Web browser (any)
-- Wayland compositor
-
-**Build**: None (pure QML, no build process)
-
-## Git Workflow
-
-### Commit Message Format
-Use conventional commits:
-- `feat:` - New search engines, features
-- `fix:` - Bug fixes, URL corrections
-- `docs:` - Documentation only
-- `style:` - Icon updates, formatting
-
-### Example Commits
-```bash
-# Add new search engine
-git commit -m "feat: add Perplexity AI search engine
-
-Adds Perplexity AI with keywords 'perplexity', 'ai', 'chat'
-for AI-powered web search."
-
-# Fix URL encoding
-git commit -m "fix: use encodeURIComponent for query encoding
-
-Replaces simple space-to-plus conversion with proper URI
-encoding to handle special characters correctly."
-```
-
-## Future Enhancement Ideas
-
-- **Search suggestions** - Show autocomplete suggestions
-- **Search history** - Track and reuse previous searches
-- **Quick search** - Search without trigger using keywords
-- **Regional engines** - Support regional variants (google.de, google.fr)
-- **POST requests** - Support engines requiring POST instead of GET
-- **Custom headers** - Add custom headers for API-based searches
-- **Engine groups** - Organize engines into categories in UI
-
-## Testing Checklist
-
-- [ ] All built-in engines work
-- [ ] Keyword matching accurate
-- [ ] Default engine selection works
-- [ ] Custom engines can be added/edited/deleted
-- [ ] URL encoding handles special characters
-- [ ] Browser launches successfully
-- [ ] Toast notifications appear
-- [ ] Settings persist across restarts
-- [ ] Trigger configuration works
-
-## Resources
-
-- [DankMaterialShell](https://github.com/AvengeMedia/DankMaterialShell)
-- [Plugin Registry](https://github.com/AvengeMedia/dms-plugin-registry)
-- [Material Symbols](https://fonts.google.com/icons)
-- [Search Engine URL Patterns](https://github.com/validcube/searx-instances)
-
----
-
-**Last Updated**: 2026-01-30
 **Maintainer**: devnullvoid
-**AI-Friendly**: This document helps AI agents quickly understand and work with this plugin.
+**Last Updated**: 2026-03-17
+**AI-Friendly**: This document helps AI agents quickly understand the hybrid architecture of static engines + off-thread filtered dynamic bangs.
